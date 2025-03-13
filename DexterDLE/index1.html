@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DexterDLE - Guess the Character!</title>
+    <link href="index.html">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            background-image: url("https://wallpapers.com/images/featured/dexter-fe9qbtzm9bbv0xxj.jpg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            width: 90%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.98;
+            box-shadow: 0 0 15px #A00000, 0 0 30px #A00000, 0 0 40px #C71515;
+            animation: neonBlink 2s infinite alternate;
+            border-radius: 10px;
+        }
+
+        @keyframes neonBlink {
+            0% {
+                box-shadow: 0 0 10px #A00000, 0 0 20px #A00000, 0 0 25px #C71515;
+                opacity: 0.95;
+            }
+            50% {
+                box-shadow: 0 0 20px #A00000, 0 0 40px #A00000, 0 0 50px #C71515;
+                opacity: 0.98;
+            }
+            100% {
+                box-shadow: 0 0 15px #A00000, 0 0 30px #A00000, 0 0 40px #C71515;
+                opacity: 0.96;
+            }
+        }
+
+        .settings {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 2;
+        }
+
+        .language-button {
+            position: relative;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .language-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #A00000 10%, transparent 70%);
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+            z-index: -1;
+            animation: neonPulse 1.5s infinite alternate;
+        }
+
+        .language-button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sound-button {
+            position: relative;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #fff;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .sound-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #A00000 10%, transparent 70%);
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+            z-index: -1;
+            animation: neonPulse 1.5s infinite alternate;
+        }
+
+        .sound-button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes neonPulse {
+            0% {
+                opacity: 0.6;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0.9;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+
+        .sound-icon {
+            transition: all 0.3s ease;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: #222;
+            border: 1px solid #A00000;
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+        }
+
+        .language-dropdown.visible {
+            display: block;
+        }
+
+        .language-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            color: transparent;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+            width: 40px;
+            height: 30px;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid #A00000;
+            box-shadow: 0 0 5px #A00000, 0 0 10px #A00000, 0 0 15px #C71515;
+            animation: neonGlowFlag 1.5s ease-in-out infinite alternate;
+        }
+
+        .language-option.en {
+            background-image: url("https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/1200px-Flag_of_the_United_Kingdom.svg.png");
+        }
+
+        .language-option.tr {
+            background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/1200px-Flag_of_Turkey.svg.png");
+        }
+
+        .language-option:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes neonGlowFlag {
+            0% {
+                box-shadow: 0 0 5px #A00000, 0 0 10px #A00000, 0 0 15px #C71515;
+            }
+            100% {
+                box-shadow: 0 0 10px #A00000, 0 0 20px #A00000, 0 0 25px #C71515;
+            }
+        }
+
+        .guess-count {
+            background: linear-gradient(45deg, #A00000, #B22222);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .guess-count:hover {
+            transform: scale(1.05);
+        }
+
+        .game-area {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #A00000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .suggestions {
+            position: absolute;
+            background: #222;
+            border: 1px solid #A00000;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 300px;
+            z-index: 10;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 5px 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center; /* Resim ve metni dikeyde hizalar */
+            gap: 10px; /* Resim ve metin arasında boşluk bırakır */
+        }
+
+        .suggestion-item:hover {
+            background: #444;
+        }
+
+        .suggestion-image {
+            width: 30px; /* Resmin genişliği */
+            height: 30px; /* Resmin yüksekliği */
+            border-radius: 5px; /* Köşeleri yuvarlak yapar */
+            border: 1px solid #A00000; /* Dexter temasına uygun bir çerçeve */
+            object-fit: cover; /* Resmi kırpar ve orantılı hale getirir */
+        }
+
+        .guess-input {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .guess-input input {
+            padding: 10px;
+            width: 300px;
+            border: 2px solid #A00000;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: #222;
+            color: #fff;
+            box-shadow: 0 0 5px #A00000, 0 0 10px #A00000;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+
+        .guess-input input::placeholder {
+            color: #A00000;
+            opacity: 0.8;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            text-shadow: 0 0 5px rgba(160, 0, 0, 0.8), 0 0 10px rgba(160, 0, 0, 0.5);
+        }
+
+        .guess-input button {
+            padding: 10px 20px;
+            background-color: #A00000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(160, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 3px #A00000, 0 0 6px #A00000;
+            opacity: 0.9;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .guess-input button:hover {
+            background-color: #B22222;
+            box-shadow: 0 0 5px #A00000, 0 0 8px #A00000;
+            opacity: 1;
+            text-shadow: 0 0 8px rgba(255, 255, 247, 1), 0 0 12px rgba(160, 0, 0, 0.7);
+        }
+
+        .home-button {
+            padding: 10px 20px;
+            background-color: #A00000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(160, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 3px #A00000, 0 0 6px #A00000;
+            opacity: 0.9;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .home-button:hover {
+            background-color: #B22222;
+            box-shadow: 0 0 5px #A00000, 0 0 8px #A00000, 0 0 12px #C71515;
+            opacity: 1;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 12px rgba(160, 0, 0, 0.7);
+        }
+
+        @keyframes neonGlow {
+            0% {
+                box-shadow: 0 0 3px #A00000, 0 0 6px #A00000;
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(160, 0, 0, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 8px #A00000, 0 0 15px #A00000, 0 0 20px #C71515;
+                text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 15px rgba(160, 0, 0, 0.8);
+            }
+        }
+
+        .restart-button {
+            padding: 10px 20px;
+            background-color: #A00000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: none;
+        }
+
+        .restart-button.visible {
+            display: inline-block;
+        }
+
+        .restart-button:hover {
+            background-color: #B22222;
+        }
+
+        .guess-result {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #A00000;
+            border-radius: 10px;
+        }
+
+        .guess-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 2px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border-radius: 5px;
+            min-height: 60px;
+            flex-wrap: nowrap;
+        }
+
+        .guess-row img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            border: 2px solid #A00000;
+            margin-right: 5px;
+        }
+
+        .categories-container {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 2px;
+            width: 100%;
+            max-width: 100%;
+            justify-content: flex-start;
+        }
+
+        .category-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            flex: 0 0 auto;
+            min-width: 80px;
+            max-width: 200px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .category-box span {
+            font-size: 0.7rem;
+            color: #A00000;
+            white-space: nowrap;
+        }
+
+        .category-value {
+            font-size: 0.7rem;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            max-width: 100%;
+            text-align: center;
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .correct { background-color: #228b22; }
+        .incorrect { background-color: #8b0000; }
+        .partial { background-color: #ff8c00; }
+
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            display: none;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #fff;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { opacity: 1; transform: scale(0); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: scale(10); }
+        }
+
+        .firework-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: hsl(var(--hue), 80%, 60%);
+            border-radius: 50%;
+            animation: fade 1.5s ease-out forwards;
+        }
+
+        @keyframes fade {
+            to { opacity: 0; transform: translateY(-50px) scale(0.5); }
+        }
+
+        .firework-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: #fff;
+            text-shadow: 0 0 15px #fff, 0 0 30px #A00000, 0 0 45px #C71515;
+            opacity: 0;
+            animation: fadeInOut 2s ease-in-out forwards;
+            font-weight: bold;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .category-box {
+                min-width: 60px;
+                max-width: 150px;
+            }
+            .guess-row img {
+                width: 40px;
+                height: 40px;
+            }
+            .category-value {
+                font-size: 0.6rem;
+                padding: 1px 3px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .guess-row {
+                flex-wrap: wrap;
+            }
+            .categories-container {
+                flex-wrap: wrap;
+            }
+            .category-box {
+                flex: 1 0 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="DexterResim/DexterDLE.png" alt="" />
+            <div class="settings">
+                <div class="language-menu">
+                    <button class="language-button" onclick="toggleLanguageDropdown()">🌐</button>
+                    <div class="language-dropdown" id="languageDropdown">
+                        <div class="language-option en" onclick="selectLanguage('en')">EN</div>
+                        <div class="language-option tr" onclick="selectLanguage('tr')">TR</div>
+                    </div>
+                </div>
+                <button class="sound-button" id="soundButton" onclick="toggleSound()">
+                    <span class="sound-icon" id="soundIcon">🔇</span>
+                </button>
+                <span class="guess-count" id="guessCount">0</span>
+            </div>
+        </header>
+        <div class="game-area">
+            <div class="guess-input">
+                <input type="text" id="guessInput" placeholder="Enter a Dexter Character..." oninput="showSuggestions()" />
+                <div id="suggestions" class="suggestions"></div>
+                <button onclick="checkGuess()">Guess</button>
+                <button class="home-button" id="homeButton" onclick="goToHomePage()">Home</button>
+                <button class="restart-button" onclick="resetGame()">Yeniden Başlat</button>
+            </div>
+            <div class="guess-result" id="guessResult">
+                <!-- Tahminler burada birikecek -->
+            </div>
+        </div>
+    </div>
+    <div id="fireworks"></div>
+
+    <script>
+        const characters = [
+            {
+                name: "Dexter Morgan",
+                image: "https://i.pinimg.com/564x/cc/0f/a6/cc0fa6ac48143670f6968d53afd9a670.jpg",
+                gender: "Male",
+                occupation: "Forensic Analyst",
+                role: "Protagonist",
+                affiliation: "Miami Metro Police",
+                personality: "Methodical",
+                firstAppearanceSeason: "1",
+                fate: "Alive",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Debra Morgan",
+                image: "https://upload.wikimedia.org/wikipedia/en/7/77/Debra_Morgan_from_Dexter%2C_season_one.jpg",
+                gender: "Female",
+                occupation: "Detective",
+                role: "Supporting",
+                affiliation: "Miami Metro Police",
+                personality: "Impulsive",
+                firstAppearanceSeason: "1",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Arthur Mitchell",
+                image: "https://upload.wikimedia.org/wikipedia/en/c/c7/ArthurMitchellDexter.jpg",
+                gender: "Male",
+                occupation: "Teacher",
+                role: "Antagonist",
+                affiliation: "Serial Killers",
+                personality: "Sadistic",
+                firstAppearanceSeason: "4",
+                fate: "Killed by Dexter",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Harrison Morgan",
+                image: "https://static.wikia.nocookie.net/dexter/images/e/e0/Harrison_New_Blood_Promo.png",
+                gender: "Male",
+                occupation: "Student",
+                role: "Supporting",
+                affiliation: "Morgan Family",
+                personality: "Troubled",
+                firstAppearanceSeason: "1",
+                fate: "Alive",
+                seriesUniverse: "New Blood"
+            },
+            {
+                name: "Harry Morgan",
+                image: "https://static.wikia.nocookie.net/dexter/images/8/8e/HarryFace.jpg",
+                gender: "Male",
+                occupation: "Police Officer",
+                role: "Supporting",
+                affiliation: "Miami Metro Police",
+                personality: "Wise",
+                firstAppearanceSeason: "1",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Rita Bennett",
+                image: "https://upload.wikimedia.org/wikipedia/en/c/c0/Rita_Bennett.jpg",
+                gender: "Female",
+                occupation: "Hotel Clerk",
+                role: "Supporting",
+                affiliation: "Morgan Family",
+                personality: "Gentle",
+                firstAppearanceSeason: "1",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Angel Batista",
+                image: "https://static.wikia.nocookie.net/dexter/images/6/6f/Angel_705.jpg",
+                gender: "Male",
+                occupation: "Detective",
+                role: "Supporting",
+                affiliation: "Miami Metro Police",
+                personality: "Loyal",
+                firstAppearanceSeason: "1",
+                fate: "Alive",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "James Doakes",
+                image: "https://static.wikia.nocookie.net/dexter/images/8/89/BigSurprise.jpg",
+                gender: "Male",
+                occupation: "Sergeant",
+                role: "Antagonist",
+                affiliation: "Miami Metro Police",
+                personality: "Aggressive",
+                firstAppearanceSeason: "1",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Maria LaGuerta",
+                image: "https://imagedelivery.net/LBWXYQ-XnKSYxbZ-NuYGqQ/b5ea5a07-2214-46aa-c028-3004e91c9800/banner",
+                gender: "Female",
+                occupation: "Lieutenant",
+                role: "Supporting",
+                affiliation: "Miami Metro Police",
+                personality: "Ambitious",
+                firstAppearanceSeason: "1",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Vince Masuka",
+                image: "https://i.pinimg.com/736x/15/cd/a0/15cda0163a0f7715a7c9e1f8b40c2754.jpg",
+                gender: "Male",
+                occupation: "Forensic Analyst",
+                role: "Supporting",
+                affiliation: "Miami Metro Police",
+                personality: "Quirky",
+                firstAppearanceSeason: "1",
+                fate: "Alive",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Hannah McKay",
+                image: "https://static.wikia.nocookie.net/dexter/images/e/ec/Hannah1.jpg",
+                gender: "Female",
+                occupation: "Florist",
+                role: "Supporting",
+                affiliation: "Serial Killers",
+                personality: "Manipulative",
+                firstAppearanceSeason: "7",
+                fate: "Unknown",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Miguel Prado",
+                image: "https://static.wikia.nocookie.net/dexter/images/3/34/Miguel_Prado_face.png",
+                gender: "Male",
+                occupation: "Prosecutor",
+                role: "Antagonist",
+                affiliation: "Miami Metro Police",
+                personality: "Charming",
+                firstAppearanceSeason: "3",
+                fate: "Killed by Dexter",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Angela Bishop",
+                image: "https://static.wikia.nocookie.net/dexter/images/5/59/Angela_at_deer_scene_NBS1E2.png",
+                gender: "Female",
+                occupation: "Police Chief",
+                role: "Supporting",
+                affiliation: "Iron Lake Police",
+                personality: "Determined",
+                firstAppearanceSeason: "1",
+                fate: "Alive",
+                seriesUniverse: "New Blood"
+            },
+            {
+                name: "Kurt Caldwell",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRP4pKn3JFcRGKI_6GeYCMFTmcTNEPX8nCBIA&s",
+                gender: "Male",
+                occupation: "Businessman",
+                role: "Antagonist",
+                affiliation: "Serial Killers",
+                personality: "Deceptive",
+                firstAppearanceSeason: "1",
+                fate: "Killed by Dexter",
+                seriesUniverse: "New Blood"
+            },
+            {
+                name: "Brian Moser",
+                image: "https://static.wikia.nocookie.net/near_pure_evil/images/1/1c/BrianMoser.webp",
+                gender: "Male",
+                occupation: "Prosthetist",
+                role: "Antagonist",
+                affiliation: "Serial Killers",
+                personality: "Cunning",
+                firstAppearanceSeason: "1",
+                fate: "Killed by Dexter",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Lila West",
+                image: "https://static.wikia.nocookie.net/dexter/images/c/ce/Lila.jpg",
+                gender: "Female",
+                occupation: "Artist",
+                role: "Antagonist",
+                affiliation: "None",
+                personality: "Obsessive",
+                firstAppearanceSeason: "2",
+                fate: "Killed by Dexter",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Joey Quinn",
+                image: "https://static.wikia.nocookie.net/dexter/images/5/58/Quinn1.jpg",
+                gender: "Male",
+                occupation: "Detective",
+                role: "Supporting",
+                affiliation: "Miami Metro Police",
+                personality: "Impulsive",
+                firstAppearanceSeason: "3",
+                fate: "Alive",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Jordan Chase",
+                image: "https://static.wikia.nocookie.net/dexter/images/2/24/Jordan_Chase.png",
+                gender: "Male",
+                occupation: "Motivational Speaker",
+                role: "Antagonist",
+                affiliation: "Serial Killers",
+                personality: "Arrogant",
+                firstAppearanceSeason: "5",
+                fate: "Killed by Dexter",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Lumen Pierce",
+                image: "https://upload.wikimedia.org/wikipedia/en/6/6d/Lumenpierce.JPG",
+                gender: "Female",
+                occupation: "None",
+                role: "Supporting",
+                affiliation: "Morgan Family",
+                personality: "Vengeful",
+                firstAppearanceSeason: "5",
+                fate: "Alive",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Travis Marshall",
+                image: "https://static.wikia.nocookie.net/dexter/images/6/62/TravisM.jpg",
+                gender: "Male",
+                occupation: "Professor",
+                role: "Antagonist",
+                affiliation: "Serial Killers",
+                personality: "Fanatical",
+                firstAppearanceSeason: "6",
+                fate: "Killed by Dexter",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Isaac Sirko",
+                image: "https://static.wikia.nocookie.net/villains/images/c/cd/Isaak_Sirko_Dexter.png",
+                gender: "Male",
+                occupation: "Mobster",
+                role: "Antagonist",
+                affiliation: "Koshka Brotherhood",
+                personality: "Ruthless",
+                firstAppearanceSeason: "7",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Evelyn Vogel",
+                image: "https://static.wikia.nocookie.net/dexter/images/4/47/Evelyn_Vogel_and_Jar.jpg",
+                gender: "Female",
+                occupation: "Neuropsychiatrist",
+                role: "Supporting",
+                affiliation: "None",
+                personality: "Analytical",
+                firstAppearanceSeason: "8",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Oliver Saxon",
+                image: "https://i.pinimg.com/736x/24/86/29/24862957c772edd8fa1af19bdeb90f98.jpg",
+                gender: "Male",
+                occupation: "Surgeon",
+                role: "Antagonist",
+                affiliation: "Serial Killers",
+                personality: "Sadistic",
+                firstAppearanceSeason: "8",
+                fate: "Killed by Dexter",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Astor Bennett",
+                image: "https://static.wikia.nocookie.net/dexter/images/0/06/Astor_Bennet_s7.PNG",
+                gender: "Female",
+                occupation: "Student",
+                role: "Supporting",
+                affiliation: "Morgan Family",
+                personality: "Rebellious",
+                firstAppearanceSeason: "1",
+                fate: "Alive",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Cody Bennett",
+                image: "https://static.wikia.nocookie.net/dexter/images/b/b7/Cody_Bennett_5.jpg",
+                gender: "Male",
+                occupation: "Student",
+                role: "Supporting",
+                affiliation: "Morgan Family",
+                personality: "Innocent",
+                firstAppearanceSeason: "1",
+                fate: "Alive",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Paul Bennett",
+                image: "https://static.wikia.nocookie.net/dexter/images/8/80/Paul_Bennett_7.PNG",
+                gender: "Male",
+                occupation: "None",
+                role: "Supporting",
+                affiliation: "Morgan Family",
+                personality: "Abusive",
+                firstAppearanceSeason: "1",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Camilla Figg",
+                image: "https://static.wikia.nocookie.net/dexter/images/0/05/Camilla_Figg_2_S2E7.png",
+                gender: "Female",
+                occupation: "Records Clerk",
+                role: "Supporting",
+                affiliation: "Miami Metro Police",
+                personality: "Kind",
+                firstAppearanceSeason: "1",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Frank Lundy",
+                image: "https://static.wikia.nocookie.net/dexter/images/7/70/Lundyclose.jpg",
+                gender: "Male",
+                occupation: "FBI Agent",
+                role: "Supporting",
+                affiliation: "FBI",
+                personality: "Observant",
+                firstAppearanceSeason: "2",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Ellen Wolf",
+                image: "https://static.wikia.nocookie.net/dexter/images/2/21/Ellen_Wolf_S3E7.PNG",
+                gender: "Female",
+                occupation: "Defense Attorney",
+                role: "Supporting",
+                affiliation: "None",
+                personality: "Principled",
+                firstAppearanceSeason: "3",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Stan Liddy",
+                image: "https://static.wikia.nocookie.net/dexter/images/2/24/Stan_Liddy-0.jpg",
+                gender: "Male",
+                occupation: "Private Investigator",
+                role: "Antagonist",
+                affiliation: "None",
+                personality: "Corrupt",
+                firstAppearanceSeason: "5",
+                fate: "Killed by Dexter",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Brother Sam",
+                image: "https://static.wikia.nocookie.net/dexter/images/6/66/BrotherSamFull.jpg",
+                gender: "Male",
+                occupation: "Mechanic",
+                role: "Supporting",
+                affiliation: "None",
+                personality: "Spiritual",
+                firstAppearanceSeason: "6",
+                fate: "Killed by Other",
+                seriesUniverse: "Dexter"
+            },
+            {
+                name: "Molly Park",
+                image: "https://static.wikia.nocookie.net/dexter/images/5/58/Molly_Park_and_Angela_NBS1E4.png",
+                gender: "Female",
+                occupation: "Podcaster",
+                role: "Supporting",
+                affiliation: "None",
+                personality: "Curious",
+                firstAppearanceSeason: "1",
+                fate: "Killed by Other",
+                seriesUniverse: "New Blood"
+            },
+            {
+        name: "Sergeant Logan",
+        image: "https://static.wikia.nocookie.net/dexter/images/2/29/Logan_Promo_NB.png",
+        gender: "Male",
+        occupation: "Police Officer",
+        role: "Supporting",
+        affiliation: "Iron Lake Police",
+        personality: "Loyal",
+        firstAppearanceSeason: "1",
+        fate: "Alive",
+        seriesUniverse: "New Blood"
+    },
+    {
+        name: "Matt Caldwell",
+        image: "https://www.postavy.cz/foto/matt-caldwell-foto.jpg",
+        gender: "Male",
+        occupation: "None",
+        role: "Supporting",
+        affiliation: "None",
+        personality: "Arrogant",
+        firstAppearanceSeason: "1",
+        fate: "Killed by Dexter",
+        seriesUniverse: "New Blood"
+    },
+    {
+        name: "Sylvia Prado",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFzx6I6v7h5zKmztSiVAC1G-ITbvtP2PGFdQ&s",
+        gender: "Female",
+        occupation: "Real Estate Agent",
+        role: "Supporting",
+        affiliation: "Prado Family",
+        personality: "Loyal",
+        firstAppearanceSeason: "3",
+        fate: "Alive",
+        seriesUniverse: "Dexter"
+    },
+    {
+        name: "Louis Greene",
+        image: "https://static.wikia.nocookie.net/dexter/images/6/65/LouisGreenestills.png",
+        gender: "Male",
+        occupation: "Game Developer",
+        role: "Supporting",
+        affiliation: "Miami Metro Police",
+        personality: "Obsessive",
+        firstAppearanceSeason: "6",
+        fate: "Killed by Other",
+        seriesUniverse: "Dexter"
+    },
+    {
+        name: "Ethan Williams",
+        image: "https://static.wikia.nocookie.net/dexter/images/6/65/Ethan_Williams_NB1E3.png",
+        gender: "Male",
+        occupation: "None",
+        role: "Supporting",
+        affiliation: "None",
+        personality: "Unstable",
+        firstAppearanceSeason: "1",
+        fate: "Killed by Dexter",
+        seriesUniverse: "New Blood"
+    },
+    {
+        name: "Jasper Hodge",
+        image: "https://static.wikia.nocookie.net/dexter/images/6/6f/Jasper_Hodges_NBS1E5.png",
+        gender: "Male",
+        occupation: "Pharmacist",
+        role: "Supporting",
+        affiliation: "None",
+        personality: "Nervous",
+        firstAppearanceSeason: "1",
+        fate: "Alive",
+        seriesUniverse: "New Blood"
+    },
+    {
+        name: "Audrey Bishop",
+        image: "https://static.wikia.nocookie.net/dexter/images/1/1a/Audrey_Bishop_NB_Promo.png",
+        gender: "Female",
+        occupation: "Student",
+        role: "Supporting",
+        affiliation: "Bishop Family",
+        personality: "Rebellious",
+        firstAppearanceSeason: "1",
+        fate: "Alive",
+        seriesUniverse: "New Blood"
+    },
+    {
+        name: "Cassie Jollenston",
+        image: "https://static.wikia.nocookie.net/dexter/images/4/47/Cassie.jpg",
+        gender: "Female",
+        occupation: "None",
+        role: "Supporting",
+        affiliation: "None",
+        personality: "Cheerful",
+        firstAppearanceSeason: "8",
+        fate: "Killed by Other",
+        seriesUniverse: "Dexter"
+    },
+    {
+        name: "Zach Hamilton",
+        image: "https://static.wikia.nocookie.net/dexter/images/6/61/ZachHamiltonstill.png",
+        gender: "Male",
+        occupation: "Student",
+        role: "Supporting",
+        affiliation: "Serial Killers",
+        personality: "Impulsive",
+        firstAppearanceSeason: "8",
+        fate: "Killed by Other",
+        seriesUniverse: "Dexter"
+    },
+    {
+        name: "Barbara Gianna",
+        image: "https://static.wikia.nocookie.net/dexter/images/5/59/Barbara1.jpg",
+        gender: "Female",
+        occupation: "Detective",
+        role: "Supporting",
+        affiliation: "Miami Metro Police",
+        personality: "Compassionate",
+        firstAppearanceSeason: "2",
+        fate: "Alive",
+        seriesUniverse: "Dexter"
+    },
+    {
+        name: "George Novikov",
+        image: "https://static.wikia.nocookie.net/dexter/images/2/2e/George_N_705.jpg",
+        gender: "Male",
+        occupation: "Mobster",
+        role: "Antagonist",
+        affiliation: "Koshka Brotherhood",
+        personality: "Brutal",
+        firstAppearanceSeason: "7",
+        fate: "Killed by Other",
+        seriesUniverse: "Dexter"
+    },
+    {
+        name: "Christine Hill",
+        image: "https://static.wikia.nocookie.net/dexter/images/9/9d/ChristineHill.jpg",
+        gender: "Female",
+        occupation: "Journalist",
+        role: "Supporting",
+        affiliation: "None",
+        personality: "Deceptive",
+        firstAppearanceSeason: "4",
+        fate: "Suicide",
+        seriesUniverse: "Dexter"
+    },
+    {
+        name: "Jonah Mitchell",
+        image: "https://static.wikia.nocookie.net/dexter/images/6/64/Jonah_7.PNG",
+        gender: "Male",
+        occupation: "Student",
+        role: "Supporting",
+        affiliation: "Mitchell Family",
+        personality: "Conflicted",
+        firstAppearanceSeason: "4",
+        fate: "Alive",
+        seriesUniverse: "Dexter"
+    },
+    
+];
+
+        let dailyCharacter = null;
+        let guessCount = 0;
+        let usedCharacters = [];
+        let guessedCharacters = [];
+        let currentLanguage = 'en';
+        let isSoundOn = false;
+
+        const backgroundMusic = new Audio("DexterSarkı/DexterB.mp3");
+        backgroundMusic.loop = true;
+
+        const translations = {
+            en: {
+                title: "DexterDLE",
+                placeholder: "Enter a Dexter Character...",
+                guessButton: "Guess",
+                homeButton: "Home",
+                congrats: "Character Identified!",
+                invalid: "Please enter a valid Dexter character!",
+                alreadyGuessed: "You already guessed this character!",
+                categories: {
+                    gender: "Gender",
+                    occupation: "Occupation",
+                    role: "Role",
+                    affiliation: "Affiliation",
+                    personality: "Personality",
+                    firstAppearanceSeason: "First Season",
+                    fate: "Fate",
+                    seriesUniverse: "Series"
+                }
+            },
+            tr: {
+                title: "DexterDLE",
+                placeholder: "Bir Dexter Karakteri Girin...",
+                guessButton: "Tahmin Et",
+                homeButton: "Anasayfa",
+                congrats: "Karakter Tanımlandı!",
+                invalid: "Lütfen geçerli bir Dexter karakteri girin!",
+                alreadyGuessed: "Bu karakteri zaten tahmin ettiniz!",
+                categories: {
+                    gender: "Cinsiyet",
+                    occupation: "Meslek",
+                    role: "Rol",
+                    affiliation: "Bağlantı",
+                    personality: "Kişilik",
+                    firstAppearanceSeason: "İlk Sezon",
+                    fate: "Kader",
+                    seriesUniverse: "Dizi"
+                }
+            }
+        };
+
+        function toggleSound() {
+            const soundIcon = document.getElementById('soundIcon');
+            if (isSoundOn) {
+                backgroundMusic.pause();
+                soundIcon.textContent = '🔇';
+                isSoundOn = false;
+            } else {
+                backgroundMusic.play().catch(error => {
+                    console.log("Ses başlatılamadı:", error);
+                });
+                soundIcon.textContent = '🔊';
+                isSoundOn = true;
+            }
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            document.getElementById('guessInput').placeholder = translations[lang].placeholder;
+            document.querySelector('.guess-input button:nth-child(3)').textContent = translations[lang].guessButton;
+            document.querySelector('.restart-button').textContent = lang === 'en' ? 'Restart' : 'Yeniden Başlat';
+            document.getElementById('homeButton').textContent = translations[lang].homeButton;
+            const guessResult = document.getElementById('guessResult');
+            if (guessResult.children.length > 0) {
+                const rows = guessResult.querySelectorAll('.guess-row');
+                rows.forEach(row => {
+                    const boxes = row.querySelectorAll('.category-box span');
+                    boxes[0].textContent = translations[lang].categories.gender;
+                    boxes[1].textContent = translations[lang].categories.occupation;
+                    boxes[2].textContent = translations[lang].categories.role;
+                    boxes[3].textContent = translations[lang].categories.affiliation;
+                    boxes[4].textContent = translations[lang].categories.personality;
+                    boxes[5].textContent = translations[lang].categories.firstAppearanceSeason;
+                    boxes[6].textContent = translations[lang].categories.fate;
+                    boxes[7].textContent = translations[lang].categories.seriesUniverse;
+                });
+            }
+        }
+
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('visible');
+        }
+
+        function selectLanguage(lang) {
+            changeLanguage(lang);
+            toggleLanguageDropdown();
+        }
+
+        function goToHomePage() {
+            window.location.href = "../index.html";
+        }
+
+        function selectRandomCharacter() {
+            let availableCharacters = characters.filter(char => !usedCharacters.includes(char.name));
+            if (availableCharacters.length === 0) {
+                usedCharacters = [];
+                availableCharacters = characters;
+            }
+            const randomIndex = Math.floor(Math.random() * availableCharacters.length);
+            const selectedCharacter = availableCharacters[randomIndex];
+            usedCharacters.push(selectedCharacter.name);
+            return selectedCharacter;
+        }
+
+        dailyCharacter = selectRandomCharacter();
+
+        function showSuggestions() {
+            const input = document.getElementById('guessInput').value.toLowerCase();
+            const suggestions = document.getElementById('suggestions');
+            suggestions.innerHTML = '';
+
+            if (input.length > 0) {
+                const filteredChars = characters.filter(char => 
+                    char.name.toLowerCase().startsWith(input) && 
+                    !guessedCharacters.includes(char.name.toLowerCase())
+                );
+                if (filteredChars.length > 0) {
+                    filteredChars.forEach(char => {
+                        const div = document.createElement('div');
+                        div.className = 'suggestion-item';
+
+                        // Resim öğesini oluştur
+                        const img = document.createElement('img');
+                        img.src = char.image; // Karakterin resmi
+                        img.className = 'suggestion-image'; // Resme stil uygulamak için sınıf
+                        img.alt = char.name; // Erişilebilirlik için alt metni
+
+                        // İsim öğesini oluştur
+                        const nameSpan = document.createElement('span');
+                        nameSpan.textContent = char.name;
+
+                        // Resmi ve ismi suggestion-item içine ekle
+                        div.appendChild(img);
+                        div.appendChild(nameSpan);
+
+                        // Tıklama olayı
+                        div.onclick = () => {
+                            document.getElementById('guessInput').value = char.name;
+                            suggestions.style.display = 'none';
+                            checkGuess();
+                        };
+
+                        suggestions.appendChild(div);
+                    });
+                    suggestions.style.display = 'block';
+                } else {
+                    suggestions.style.display = 'none';
+                }
+            } else {
+                suggestions.style.display = 'none';
+            }
+        }
+
+        function resetGame() {
+            document.getElementById('guessResult').innerHTML = '';
+            guessCount = 0;
+            document.getElementById('guessCount').textContent = guessCount;
+            guessedCharacters = [];
+            dailyCharacter = selectRandomCharacter();
+            document.getElementById('fireworks').style.display = 'none';
+            document.getElementById('fireworks').innerHTML = '';
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessInput').disabled = false;
+            document.querySelector('.restart-button').classList.remove('visible');
+        }
+
+        function fireworks() {
+            const fireworksContainer = document.getElementById('fireworks');
+            fireworksContainer.style.display = 'block';
+
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    createFirework();
+                }, i * 200);
+            }
+
+            const message = document.createElement('div');
+            message.className = 'firework-message';
+            message.textContent = translations[currentLanguage].congrats;
+            fireworksContainer.appendChild(message);
+
+            document.querySelector('.restart-button').classList.add('visible');
+        }
+
+        function createFirework() {
+            const fireworksContainer = document.getElementById('fireworks');
+            const firework = document.createElement('div');
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            firework.className = 'firework';
+            firework.style.left = `${x}px`;
+            firework.style.top = `${y}px`;
+            fireworksContainer.appendChild(firework);
+
+            const hue = Math.random() * 360;
+
+            setTimeout(() => {
+                firework.remove();
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'firework-particle';
+                    particle.style.left = '0';
+                    particle.style.top = '0';
+                    particle.style.setProperty('--hue', hue);
+                    firework.appendChild(particle);
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 5 + 5;
+                    const velocityX = Math.cos(angle) * speed;
+                    const velocityY = Math.sin(angle) * speed;
+
+                    particle.animate(
+                        [
+                            { transform: 'translate(0, 0)', opacity: 1 },
+                            { transform: `translate(${velocityX * 10}px, ${velocityY * 10}px)`, opacity: 0 }
+                        ],
+                        {
+                            duration: 1500,
+                            easing: 'ease-out'
+                        }
+                    );
+
+                    setTimeout(() => particle.remove(), 1500);
+                }
+            }, 100);
+        }
+
+        function checkGuess() {
+            const guessInput = document.getElementById('guessInput').value.trim();
+            if (!guessInput) {
+                alert(translations[currentLanguage].invalid);
+                return;
+            }
+
+            const guessedCharacter = characters.find(char => char.name.toLowerCase() === guessInput.toLowerCase());
+            if (!guessedCharacter) {
+                alert(translations[currentLanguage].invalid);
+                return;
+            }
+
+            if (guessedCharacters.includes(guessedCharacter.name.toLowerCase())) {
+                alert(translations[currentLanguage].alreadyGuessed);
+                document.getElementById('guessInput').value = '';
+                document.getElementById('suggestions').style.display = 'none';
+                return;
+            }
+
+            guessCount++;
+            document.getElementById('guessCount').textContent = guessCount;
+            guessedCharacters.push(guessedCharacter.name.toLowerCase());
+
+            const guessResult = document.getElementById('guessResult');
+
+            const guessRow = document.createElement('div');
+            guessRow.className = 'guess-row';
+
+            const img = document.createElement('img');
+            img.src = guessedCharacter.image;
+            guessRow.appendChild(img);
+
+            const categoriesContainer = document.createElement('div');
+            categoriesContainer.className = 'categories-container';
+            categoriesContainer.style.display = 'flex';
+            categoriesContainer.style.flexWrap = 'wrap';
+            categoriesContainer.style.gap = '2px';
+            categoriesContainer.style.width = '100%';
+
+            const categories = [
+                { label: translations[currentLanguage].categories.gender, value: guessedCharacter.gender, correct: dailyCharacter.gender },
+                { label: translations[currentLanguage].categories.occupation, value: guessedCharacter.occupation, correct: dailyCharacter.occupation },
+                { label: translations[currentLanguage].categories.role, value: guessedCharacter.role, correct: dailyCharacter.role },
+                { label: translations[currentLanguage].categories.affiliation, value: guessedCharacter.affiliation, correct: dailyCharacter.affiliation },
+                { label: translations[currentLanguage].categories.personality, value: guessedCharacter.personality, correct: dailyCharacter.personality },
+                { label: translations[currentLanguage].categories.firstAppearanceSeason, value: guessedCharacter.firstAppearanceSeason, correct: dailyCharacter.firstAppearanceSeason },
+                { label: translations[currentLanguage].categories.fate, value: guessedCharacter.fate, correct: dailyCharacter.fate },
+                { label: translations[currentLanguage].categories.seriesUniverse, value: guessedCharacter.seriesUniverse, correct: dailyCharacter.seriesUniverse }
+            ];
+
+            categories.forEach((category, index) => {
+                const box = document.createElement('div');
+                box.className = 'category-box';
+                box.style.animationDelay = `${index * 0.4}s`;
+
+                const label = document.createElement('span');
+                label.textContent = category.label;
+                box.appendChild(label);
+
+                const value = document.createElement('div');
+                value.className = 'category-value';
+                value.textContent = category.value;
+
+                if (category.label === translations[currentLanguage].categories.firstAppearanceSeason) {
+                    const guessedSeason = parseInt(category.value);
+                    const correctSeason = parseInt(category.correct);
+                    if (guessedSeason === correctSeason) value.classList.add('correct');
+                    else if (Math.abs(guessedSeason - correctSeason) <= 1) value.classList.add('partial');
+                    else value.classList.add('incorrect');
+                } else {
+                    if (category.value === category.correct) value.classList.add('correct');
+                    else value.classList.add('incorrect');
+                }
+
+                box.appendChild(value);
+                categoriesContainer.appendChild(box);
+            });
+
+            guessRow.appendChild(categoriesContainer);
+            guessResult.appendChild(guessRow); // Yeni satır ekleniyor, eski satırlar silinmiyor
+
+            if (guessedCharacter.name.toLowerCase() === dailyCharacter.name.toLowerCase()) {
+                fireworks();
+                document.getElementById('guessInput').disabled = true;
+            } else {
+                document.getElementById('guessInput').value = '';
+            }
+
+            document.getElementById('suggestions').style.display = 'none';
+        }
+
+        document.addEventListener('click', function(e) {
+            const suggestions = document.getElementById('suggestions');
+            const dropdown = document.getElementById('languageDropdown');
+            if (!e.target.closest('.guess-input')) {
+                suggestions.style.display = 'none';
+            }
+            if (!e.target.closest('.language-menu')) {
+                dropdown.classList.remove('visible');
+            }
+        });
+
+        const guessCountElement = document.getElementById('guessCount');
+        guessCountElement.addEventListener('mouseover', function() {
+            guessCountElement.textContent = currentLanguage === 'en' ? 'Guess Count' : 'Tahmin Sayısı';
+        });
+        guessCountElement.addEventListener('mouseout', function() {
+            guessCountElement.textContent = guessCount;
+        });
+
+        window.onload = function() {
+            changeLanguage('en');
+        };
+    </script>
+</body>
+</html>

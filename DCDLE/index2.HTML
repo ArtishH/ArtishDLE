@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCdle - Guess the DC Character!</title>
+    <link href="/index.html">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            background-image: url("Resimler/dcdleimage.jpg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            width: 90%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.98;
+            box-shadow: 0 0 15px #1E90FF, 0 0 30px #1E90FF, 0 0 40px #87CEEB;
+            animation: neonBlink 2s infinite alternate;
+            border-radius: 10px;
+        }
+
+        @keyframes neonBlink {
+            0% {
+                box-shadow: 0 0 10px #1E90FF, 0 0 20px #1E90FF, 0 0 25px #87CEEB;
+                opacity: 0.95;
+            }
+            50% {
+                box-shadow: 0 0 20px #1E90FF, 0 0 40px #1E90FF, 0 0 50px #87CEEB;
+                opacity: 0.98;
+            }
+            100% {
+                box-shadow: 0 0 15px #1E90FF, 0 0 30px #1E90FF, 0 0 40px #87CEEB;
+                opacity: 0.96;
+            }
+        }
+
+        .settings {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 2;
+        }
+
+        .language-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .language-button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sound-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #fff;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .sound-button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sound-icon {
+            transition: all 0.3s ease;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: #222;
+            border: 1px solid #1E90FF;
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+        }
+
+        .language-dropdown.visible {
+            display: block;
+        }
+
+        .language-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            color: transparent;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+            width: 40px;
+            height: 30px;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid #1E90FF;
+            box-shadow: 0 0 5px #1E90FF, 0 0 10px #1E90FF, 0 0 15px #87CEEB;
+            animation: neonGlowFlag 1.5s ease-in-out infinite alternate;
+        }
+
+        .language-option.en {
+            background-image: url("https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/1200px-Flag_of_the_United_Kingdom.svg.png");
+        }
+
+        .language-option.tr {
+            background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/1200px-Flag_of_Turkey.svg.png");
+        }
+
+        .language-option:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes neonGlowFlag {
+            0% {
+                box-shadow: 0 0 5px #1E90FF, 0 0 10px #1E90FF, 0 0 15px #87CEEB;
+            }
+            100% {
+                box-shadow: 0 0 10px #1E90FF, 0 0 20px #1E90FF, 0 0 25px #87CEEB;
+            }
+        }
+
+        .guess-count {
+            background: linear-gradient(45deg, #1E90FF, #4169E1);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .guess-count:hover {
+            transform: scale(1.05);
+        }
+
+        .game-area {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #1E90FF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .suggestions {
+            position: absolute;
+            background: #222;
+            border: 1px solid #1E90FF;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 300px;
+            z-index: 10;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 5px 10px;
+            cursor: pointer;
+            display: flex; /* Resim ve metni yan yana koyar */
+            align-items: center; /* Resim ve metni dikeyde hizalar */
+            gap: 10px; /* Resim ve metin arasında boşluk bırakır */
+        }
+
+        .suggestion-item:hover {
+            background: #444;
+        }
+
+        .suggestion-image {
+            width: 30px; /* Resmin genişliği */
+            height: 30px; /* Resmin yüksekliği */
+            border-radius: 5px; /* Köşeleri yuvarlak yapar */
+            border: 1px solid #1E90FF; /* DC temasına uygun bir çerçeve */
+            object-fit: cover; /* Resmi kırpar ve orantılı hale getirir */
+        }
+
+        .guess-input {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .guess-input input {
+            padding: 10px;
+            width: 300px;
+            border: 2px solid #1E90FF;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: #222;
+            color: #fff;
+            box-shadow: 0 0 5px #1E90FF, 0 0 10px #1E90FF;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+
+        .guess-input input::placeholder {
+            color: #1E90FF;
+            opacity: 0.8;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            text-shadow: 0 0 5px rgba(30, 144, 255, 0.8), 0 0 10px rgba(30, 144, 255, 0.5);
+        }
+
+        .guess-input button {
+            padding: 10px 20px;
+            background-color: #1E90FF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(30, 144, 255, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 3px #1E90FF, 0 0 6px #1E90FF;
+            opacity: 0.9;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .guess-input button:hover {
+            background-color: #4169E1;
+            box-shadow: 0 0 5px #1E90FF, 0 0 8px #1E90FF;
+            opacity: 1;
+            text-shadow: 0 0 8px rgba(255, 255, 247, 1), 0 0 12px rgba(30, 144, 255, 0.7);
+        }
+
+        .home-button {
+            padding: 10px 20px;
+            background-color: #1E90FF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(30, 144, 255, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 3px #1E90FF, 0 0 6px #1E90FF;
+            opacity: 0.9;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .home-button:hover {
+            background-color: #4169E1;
+            box-shadow: 0 0 5px #1E90FF, 0 0 8px #1E90FF, 0 0 12px #87CEEB;
+            opacity: 1;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 12px rgba(30, 144, 255, 0.7);
+        }
+
+        @keyframes neonGlow {
+            0% {
+                box-shadow: 0 0 3px #1E90FF, 0 0 6px #1E90FF;
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(30, 144, 255, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 8px #1E90FF, 0 0 15px #1E90FF, 0 0 20px #87CEEB;
+                text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 15px rgba(30, 144, 255, 0.8);
+            }
+        }
+
+        .restart-button {
+            padding: 10px 20px;
+            background-color: #1E90FF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: none;
+        }
+
+        .restart-button.visible {
+            display: inline-block;
+        }
+
+        .restart-button:hover {
+            background-color: #4169E1;
+        }
+
+        .guess-history {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            max-height: 400px;
+            padding: 10px;
+            scroll-behavior: smooth;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #1E90FF;
+            border-radius: 10px;
+        }
+
+        .guess-history::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .guess-history::-webkit-scrollbar-track {
+            background: #222;
+            border-radius: 5px;
+        }
+
+        .guess-history::-webkit-scrollbar-thumb {
+            background: #1E90FF;
+            border-radius: 5px;
+            border: 2px solid #333;
+        }
+
+        .guess-history::-webkit-scrollbar-thumb:hover {
+            background: #4169E1;
+        }
+
+        .guess-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 2px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border-radius: 5px;
+            min-height: 60px;
+            flex-wrap: nowrap;
+        }
+
+        .guess-row img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            border: 2px solid #1E90FF;
+            margin-right: 5px;
+        }
+
+        .categories-container {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 2px;
+            width: 100%;
+            max-width: 100%;
+            justify-content: flex-start;
+        }
+
+        .category-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            flex: 0 0 auto;
+            min-width: 80px;
+            max-width: 200px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .category-box span {
+            font-size: 0.7rem;
+            color: #1E90FF;
+            white-space: nowrap;
+        }
+
+        .category-value {
+            font-size: 0.7rem;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            max-width: 100%;
+            text-align: center;
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .correct { background-color: #228b22; }
+        .incorrect { background-color: #8b0000; }
+        .partial { background-color: #ff8c00; }
+
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            display: none;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #fff;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { opacity: 1; transform: scale(0); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: scale(10); }
+        }
+
+        .firework-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: hsl(var(--hue), 80%, 60%);
+            border-radius: 50%;
+            animation: fade 1.5s ease-out forwards;
+        }
+
+        @keyframes fade {
+            to { opacity: 0; transform: translateY(-50px) scale(0.5); }
+        }
+
+        .firework-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: #fff;
+            text-shadow: 0 0 15px #fff, 0 0 30px #1E90FF, 0 0 45px #ff0000;
+            opacity: 0;
+            animation: fadeInOut 2s ease-in-out forwards;
+            font-weight: bold;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Yatay Yağmur Efekti */
+        #rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0; /* Arka planda kalsın */
+        }
+
+        .raindrop {
+            position: absolute;
+            width: 40px; /* Daha uzun damlalar için genişlik artırıldı */
+            height: 2px; /* Kalınlık hafif artırılabilir */
+            background: rgba(135, 206, 235, 0.7); /* SkyBlue ile uyumlu, hafif şeffaf */
+            transform: rotate(-30deg); /* Daha belirgin bir eğim için açı artırıldı */
+            animation: fallHorizontal linear infinite;
+            box-shadow: 0 0 5px rgba(135, 206, 235, 0.5); /* Hafif bir parlama efekti */
+        }
+
+        @keyframes fallHorizontal {
+            0% {
+                transform: translateX(110vw) translateY(-10vh) rotate(-30deg); /* Sağ üstten başlasın */
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateX(-110vw) translateY(110vh) rotate(-30deg); /* Sol alta gitsin */
+                opacity: 0.3;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .category-box {
+                min-width: 60px;
+                max-width: 150px;
+            }
+            .guess-row img {
+                width: 40px;
+                height: 40px;
+            }
+            .category-value {
+                font-size: 0.6rem;
+                padding: 1px 3px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .guess-row {
+                flex-wrap: wrap;
+            }
+            .categories-container {
+                flex-wrap: wrap;
+            }
+            .category-box {
+                flex: 1 0 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="Resimler/dclogo.png" alt="DCdle Logo" />
+            <div class="settings">
+                <div class="language-menu">
+                    <button class="language-button" onclick="toggleLanguageDropdown()">🌐</button>
+                    <div class="language-dropdown" id="languageDropdown">
+                        <div class="language-option en" onclick="selectLanguage('en')">EN</div>
+                        <div class="language-option tr" onclick="selectLanguage('tr')">TR</div>
+                    </div>
+                </div>
+                <button class="sound-button" id="soundButton" onclick="toggleSound()">
+                    <span class="sound-icon" id="soundIcon">🔇</span>
+                </button>
+                <span class="guess-count" id="guessCount">0</span>
+            </div>
+        </header>
+        <div class="game-area">
+            <div class="guess-input">
+                <input type="text" id="guessInput" placeholder="Enter a DC Character..." oninput="showSuggestions()" />
+                <div id="suggestions" class="suggestions"></div>
+                <button onclick="checkGuess()">Guess</button>
+                <button class="home-button" id="homeButton" onclick="goToHomePage()">Home</button>
+                <button class="restart-button" onclick="resetGame()">Yeniden Başlat</button>
+            </div>
+            <div class="guess-history" id="guessHistory">
+                <!-- Tahminler burada alt alta ve dikey kaydırılabilir olacak -->
+            </div>
+        </div>
+    </div>
+    <div id="fireworks"></div>
+    <div id="rain"></div> <!-- Yağmur efekti için container -->
+
+    <script>
+        const characters = [
+        { 
+            name: "Superman",
+            gender: "Male",
+            type: "Superhero", 
+            species: "Alien", 
+            powerType: ["Superhuman Strength", "Flight", "Superhuman Speed", "Superhuman Durability", "Super Senses"], 
+            origin: "Krypton", 
+            affiliations: ["Justice League"], 
+            appearanceType: "Comics", 
+            apparitionYear: 1938, 
+            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy-eqce3BFoHf-wmK3Oar_wmgEVxkNeJUrqqleDxI7ZfBNcZtN74JEQ6z5Mp0Sv60P0x8&usqp=CAU" 
+            },
+
+            { 
+                name: "Wonder Woman",
+                gender: "Female", 
+                type: "Superhero", 
+                species: "DemiGod", 
+                powerType: ["Superhuman Strength", "Superhuman Agility", "Superhuman Durability", "Flight", "Superhuman Speed", "Superhuman Reflexes"], 
+                origin: "Themyscira", 
+                affiliations: ["Justice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1941, 
+                image: "https://i.ytimg.com/vi/RmMZbgAdffw/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBjIFNrV0mIUVaqbUp3ro9frUVMhQ" 
+            },
+
+            {
+                 name: "Batman",
+                 gender: "Male",
+                 type: "Superhero", 
+                 species: "Human", 
+                 powerType: ["Intelligence", "Agility", "Enhanced Strength", "Enhanced Durability", "Master Martial Artist"], 
+                 origin: "Earth", 
+                 affiliations: ["Justice League"], 
+                 appearanceType: "Comics",
+                 apparitionYear: 1939, 
+                 image: "https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/batman_91.png" 
+                },
+
+            {
+                name: "Harley Quinn",
+                gender: "Female",
+                type: "Supervillain", 
+                species: "Human", 
+                powerType: ["Agility", "expert gymnastic skills"], 
+                origin: "Earth", 
+                affiliations: ["Suicide Squad"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1992, 
+                image: "https://leclaireur.fnac.com/wp-content/uploads/2022/06/harley-quinn-1256x826.jpeg" 
+            },
+
+            {
+                 name: "The Flash(Barry Allen)",
+                 gender: "Male", 
+                 type: "Superhero", 
+                 species: "Metahuman", 
+                 powerType: ["Superhuman Speed", "Speed Force", "Superhuman Strength", "Superhuman Durability"], 
+                 origin: "Earth", 
+                 affiliations: ["Justice League"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1940, 
+                 image: "https://www.usatoday.com/gcdn/-mm-/5d94b5ec9e71d95f0337420b5ad90f3346bd0661/c=30-346-1956-2911/local/-/media/USATODAY/test/2014/01/13//1389651012000-XXX-FLS-30.jpg"  
+              },
+
+
+            {
+                 name: "Green Lantern(Hal Jordan)",
+                 gender: "Male", 
+                 type: "Superhero", 
+                 species: "Human", 
+                 powerType: ["Energy", "Energy Projection", "Energy Construct Creation", "Superhuman Strength", "Superhuman Durability", "Flight"], 
+                 origin: "Earth", 
+                 affiliations: ["Green Lantern Corps"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1940, 
+                 image: "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/hostedimages/1450288156i/17404982._SY540_.jpg" 
+                
+            },
+            
+            {  
+                name: "Aquaman",  
+                gender: "Male",  
+                type: "Superhero",  
+                species: "Metahuman",  
+                powerType: ["Superhuman Strength", "Superhuman Durability", "Enhanced Underwater Breathing", "Enhanced Smell"],  
+                origin: "Atlantis",  
+               affiliations: ["Justice League"],  
+               appearanceType: "Comics",  
+               apparitionYear: 1941,  
+               image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1yEd-w7IFYeWBFT3VTYvkMcym_oF-N_5pig&s"  
+            },  
+
+            { 
+                name: "Red Hood", 
+                gender: "Male", 
+                type: "AntiHero", 
+                species: "Human", 
+                powerType: ["Enhanced Strength", "Enhanced Durability", "Agility", "Master Martial Artist"], 
+                origin: "Earth", 
+                affiliations: ["None"], 
+                appearanceType: "Comics", 
+                apparitionYear: 2005, 
+                image: "https://images4.alphacoders.com/812/thumb-1920-812516.jpg" 
+            },
+
+            { 
+                name: "Red Robin", 
+                gender: "Male",
+                type: "Superhero", 
+                species: "Human", 
+                powerType: ["Enhanced Strength", "Enhanced Durability", "Agility", "Master Martial Artist"], 
+                origin: "Earth", 
+                affiliations: ["Teen Titans"],
+                appearanceType: "Comics", 
+                apparitionYear: 2009, 
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAmEB7Qp3n7YdOyeZxsH9Bqxw8qLM14sg8Ng&s" 
+            },
+
+            {
+              name: "Robin(Damian Wayne)",
+              gender: "Male", 
+              type: "Superhero", 
+              species: "Human",
+              powerType: ["Enhanced Durability", "Agility", "Master Martial Artist"], 
+              origin: "Earth", 
+              affiliations: ["Teen Titans"], 
+              appearanceType: "Comics", 
+              apparitionYear: 2006, 
+              image: "https://static.wikia.nocookie.net/marvel_dc/images/4/4f/Robin_Vol_3_13_Textless_Cruz_Variant.jpg" 
+          
+            },
+
+            { 
+                name: "Zatanna Zatara",
+                gender: "Female", 
+                type: "Superhero", 
+                species: "Human", 
+                powerType: ["Magic", "Telekinesis", "Elemental Manipulation"], 
+                origin: "Earth", 
+                affiliations: ["Justice League Dark"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1964, 
+                image: "https://static.wikia.nocookie.net/character-stats-and-profiles/images/2/26/2965169682ca418831e244356873d5d7.jpg" 
+            },
+
+            {
+                 name: "Black Canary (Dinah Lance)", 
+                 gender: "Female", 
+                 type: "Superhero", 
+                 species: "Human", 
+                 powerType: ["Canary Cry", "Enhanced Strength", "Enhanced Durability"], 
+                 origin: "Earth", 
+                 affiliations: ["Justice League"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1947, 
+                 image: "https://static.wikia.nocookie.net/marvel_dc/images/9/9f/Batgirl_and_the_Birds_of_Prey_Vol_1_9_Textless.jpg" 
+            
+            },
+
+            { 
+                name: "Reverse-Flash (Eobard Thawne)", 
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Metahuman", 
+                powerType: ["Superhuman Speed", "Negative Speed Force", "Superhuman Strength", "Superhuman Durability"], 
+                origin: "Earth", 
+                affiliations: ["None"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1961, 
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSth8unK1DvaTpKTrhUcFAI5p_q2uYFAoIsthp4Xl9dihzpfaBDIiyURTAlc3sQYdku_tA&usqp=CAU" 
+            },
+
+            {
+                 name: "Deathstroke", 
+                 gender: "Male", 
+                 type: "Supervillain",
+                 species: "Super Soldier", 
+                 powerType: ["Enhanced Hearing", "Enhanced Sense of Smell", "Enhanced Vision", "Enhanced Strength", "Enhanced Durability", "Master Martial Artist"], 
+                 origin: "Earth", 
+                 affiliations: ["None"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1980, 
+                 image: "https://static.wikia.nocookie.net/marvel_dc/images/c/c2/Deathstroke_Inc._Vol_1_8_Textless_Burnham_Variant.jpg/" 
+            
+            },
+
+            { 
+                name: "Atom(Ray Palmer)",
+                gender: "Male", 
+                type: "Superhero", 
+                species: "Human", 
+                powerType: ["Transmutation"], 
+                origin: "Earth", 
+                affiliations: ["Justice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1961, 
+                image: "https://comicvine.gamespot.com/a/uploads/scale_small/3/30334/595848-jla2585.gif"
+             },
+
+            {
+                 name: "Adam Strange",
+                 gender: "Male", 
+                 type: "Superhero", 
+                 species: "Human", 
+                 powerType: ["Enhanced Vision", "Genius-level intellect"], 
+                 origin: "Earth", 
+                 affiliations: ["None"],
+                 appearanceType: "Comics", 
+                 apparitionYear: 1958, 
+                 image: "https://upload.wikimedia.org/wikipedia/en/8/8d/Adam_Strange.png" 
+           
+             },
+
+            { 
+              name: "Arsenal (Roy Harper)",
+              gender: "Male", 
+              type: "Superhero", 
+              species: "Human", 
+              powerType: ["Enhanced Reflexes", "Enhanced Stamina"], 
+              origin: "Earth", 
+              affiliations: ["Teen Titans"], 
+              appearanceType: "Comics", 
+              apparitionYear: 1987, 
+              image: "https://i.pinimg.com/736x/e7/b6/81/e7b6819feab84709b500dcadc1185fc4.jpg"
+             },
+
+            {
+                 name: "Anti Monitor", 
+                 gender: "Male", 
+                 type: "Supervillain", 
+                 species: "Anti-Monitorian", 
+                 powerType: ["Energy Absorption", "Power Distribution", "Reality Alteration", "Energy Construct Creation", "Antimatter Blast", "Superhuman Strength"], 
+                 origin: "Anti-Matter Universe", 
+                 affiliations: ["None"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1985, 
+                 image: "https://upload.wikimedia.org/wikipedia/en/0/0f/Anti-Monitor_(Ivan_Reis's_art).png"
+                 },
+
+            {
+                 name: "Abra Kadabra",
+                 gender: "Male",
+                 type: "Supervillain", 
+                 species: "Human", 
+                 powerType: ["Magic", "Illusion Creation", "Reality Warping", "Technomancy"], 
+                 origin: "Earth", 
+                 affiliations: ["None"], 
+                 appearanceType: "Comics",
+                 apparitionYear: 1962, 
+                 image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMKw-KwOL1TCSU40YozXHCeJoIx4eeEGyiiQ&s" 
+            },
+
+            {
+                 name: "Ra's al Ghul",
+                 gender: "Male", 
+                 type: "Supervillain", 
+                 species: "Human", 
+                 powerType: ["Longevity", "Master Martial Artist", "Genius Intellect"], 
+                 origin: "Earth", 
+                 affiliations: ["League of Assassins"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1971, 
+                 image: "https://cdn.mos.cms.futurecdn.net/rSRPVnJYEsKNoLwN3tqE7D.jpg" 
+            },
+
+            { 
+                name: "Raven", 
+                gender: "Female", 
+                type: "Superhero", 
+                species: "Half-Demon", 
+                powerType: ["Magic", "Telekinesis", "Empathy"], 
+                origin: "Azarath", 
+                affiliations: ["Teen Titans"],
+                appearanceType: "Comics", 
+                apparitionYear: 1980, 
+                image: "https://comicvine.gamespot.com/a/uploads/scale_medium/11132/111329300/6505671-raven_in_comic_book.jpg" 
+            },
+
+            { 
+                name: "Red Tornado", 
+                gender: "Male", 
+                type: "Superhero", 
+                species: "Android", 
+                powerType: ["Aerokinesis", "Flight", "Superhuman Strength"], 
+                origin: "Earth", 
+                affiliations: ["Justice Society of America"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1968, 
+                image: "https://upload.wikimedia.org/wikipedia/en/7/70/Red_Tornado_%28Ed_Benes%27s_art%29.png" 
+            },
+
+            { 
+                name: "Ravager (Rose Wilson)", 
+                gender: "Female", 
+                type: "AntiHero", 
+                species: "Metahuman", 
+                powerType: ["Enhanced Reflexes", "Combat Skills"], 
+                origin: "Earth", 
+                affiliations: ["Teen Titans"],
+                appearanceType: "Comics", 
+                apparitionYear: 1992, 
+                image: "https://static.wikia.nocookie.net/marvel_dc/images/8/81/Ravager_Rose_Wilson_006.jpg" 
+            },
+
+            { 
+                name: "Riddler (Edward Nygma)",
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Human", 
+                powerType: ["Genius Intellect", "Puzzle Mastery"], 
+                origin: "Earth", 
+                affiliations: ["Injustice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1948, 
+                image: "https://comicvine.gamespot.com/a/uploads/scale_medium/12/124259/9098738-large-1922337.jpg" 
+            },
+
+            {
+                 name: "Red Claw",
+                 gender: "Female", 
+                 type: "Supervillain",
+                 species: "Human",
+                 powerType: ["Martial Arts", "Leadership"], 
+                 origin: "Earth", 
+                 affiliations: ["None"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1992, 
+                 image: "https://static.wikia.nocookie.net/marvel_dc/images/a/a3/Red_Claw_Prime_Earth_0001.jpg" 
+            },
+
+            { 
+                name: "Red Star (Leonid Kovar)",
+                gender: "Male", 
+                type: "Superhero", 
+                species: "Metahuman",
+                powerType: ["Energy Manipulation", "Superhuman Strength"],
+                origin: "Earth", 
+                affiliations: ["None"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1968, 
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpLwcNp5g2rqI_lWVzpT5fsn0wXspgzK4PRlFDRdT4dpTOjgqpZKyEEv7m-DTyOYcidZQ&usqp=CAU" 
+            },
+
+            { 
+                name: "Talia al Ghul", 
+                gender: "Female", 
+                type: "AntiHero", 
+                species: "Human", 
+                powerType: ["Martial Arts Mastery", "High Intellect", "Leadership"], 
+                origin: "Earth", 
+                affiliations: ["League of Assassins"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1971, 
+                image: "https://lh4.googleusercontent.com/proxy/9ejo1DMI1CWNSzg_p9z73uRMB_NkkClo4HeMgzD_UoWfuogdXtzWg-Qha4LgA0DBIuUBwp_YhGqeQlBDrf21ejCSDP3i7Aot737Ra1MS6PUQuki6zvhmW2VqznNjznuTGA" 
+            },
+
+            {
+                 name: "Tempest (Garth)", 
+                 gender: "Male", 
+                 type: "Superhero",
+                 species: "Atlantean", 
+                 powerType: ["Hydrokinesis", "Superhuman Strength", "Flight"],
+                 origin: "Atlantis",
+                 affiliations: ["Teen Titans"],
+                 appearanceType: "Comics",
+                 apparitionYear: 1960, 
+                 image: "https://static1.cbrimages.com/wordpress/wp-content/uploads/2020/01/tempest-featured.jpg" 
+            },
+
+            { 
+                name: "Terra (Tara Markov)", 
+                gender: "Female", 
+                type: "AntiHero", 
+                species: "Metahuman",
+                powerType: ["Geokinesis", "Enhanced Strength"],
+                origin: "Earth", 
+                affiliations: ["Teen Titans"], 
+                appearanceType: "Comics",
+                apparitionYear: 1982,
+                image: "https://static.wikia.nocookie.net/marvel_dc/images/1/15/Deathstroke_Vol_4_27_Textless.jpg" 
+            },
+
+            { 
+                name: "Yellow Lantern (Thaal Sinestro)",
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Korugarian", 
+                powerType: ["Fear Energy Manipulation", "Flight"], 
+                origin: "Korugar", 
+                affiliations: ["Sinestro Corps"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1961, 
+                image: "https://static.wikia.nocookie.net/marvel_dc/images/b/b8/Sinestro_001.jpg" },
+
+            {
+                 name: "Ultraman", 
+                 gender: "Male", 
+                 type: "Supervillain", 
+                 species: "Kryptonian (Crime Syndicate)", 
+                 powerType: ["Superhuman Strength", "Flight", "Kryptonite Absorption"], 
+                 origin: "Earth-3", 
+                 affiliations: ["Crime Syndicate"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1964, 
+                 image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH5INpS0sKUSqiP812EidKFAr2sBxPqGbWeQ&s" 
+            },
+
+            { 
+                name: "Impulse (Bart Allen)", 
+                gender: "Male", 
+                type: "Superhero", 
+                species: "Metahuman", 
+                powerType: ["Superhuman Speed", "Speed Force"], 
+                origin: "Earth", 
+                affiliations: ["Teen Titans"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1994, 
+                image: "https://i.pinimg.com/1200x/a1/6f/91/a16f91b509f40fc21462dc762c0ea614.jpg" 
+            },
+
+            { 
+                name: "Owlman (Thomas Wayne Jr.)", 
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Human", 
+                powerType: ["Genius Intellect", "Combat Skills"], 
+                origin: "Earth-3", 
+                affiliations: ["Crime Syndicate"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1964, 
+                image: "https://static.wikia.nocookie.net/batman/images/a/a4/Earth-3_Owlman_New_52.jpg" 
+            },
+
+            { 
+                name: "Ocean Master (Orm Marius)", 
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Atlantean", 
+                powerType: ["Aquatic Control", "Enhanced Strength"], 
+                origin: "Atlantis", 
+                affiliations: ["Injustice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1966, 
+                image: "https://upload.wikimedia.org/wikipedia/en/3/33/Ocean_Master_Aquaman_Vol_7_14.png" 
+            },
+
+            { 
+                name: "Penguin (Oswald Cobblepot)", 
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Human", 
+                powerType: ["Genius Intellect", "Weapon Mastery", "Criminal Mastermind"], 
+                origin: "Earth", 
+                affiliations: ["Injustice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1941, 
+                image: "https://static1.cbrimages.com/wordpress/wp-content/uploads/2024/11/the-penguin-special-1-cover-header.jpg" 
+            },
+
+            { 
+                name: "Plastic Man (Patrick O’Brian)", 
+                gender: "Male", 
+                type: "Superhero", 
+                species: "Metahuman", 
+                powerType: ["Elasticity", "Shape-shifting"], 
+                origin: "Earth", 
+                affiliations: ["Justice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1941, 
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTB8w5f5UjzuPQmmbX54Yp-T2IPG1bnQ51kUA&s" 
+            },
+
+            {
+             name: "Deadshot (Floyd Lawton)",
+             gender: "Male", 
+             type: "Supervillain", 
+             species: "Human", 
+             powerType: ["Marksmanship", "Combat Skills"], 
+             origin: "Earth", 
+             affiliations: ["Suicide Squad"], 
+             appearanceType: "Comics", 
+             apparitionYear: 1950, 
+             image: "https://pm1.aminoapps.com/5754/8ee47e087765a49fa3861e9f62f3b2cbdbb298a2_00.jpg" 
+            },
+
+            { 
+                name: "Doctor Fate (Kent Nelson)", 
+                gender: "Male", 
+                type: "Superhero", 
+                species: "Human", 
+                powerType: ["Magic", "Flight", "Telekinesis"], 
+                origin: "Earth", 
+                affiliations: ["Justice Society of America"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1940, 
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUozAW8a58TA1_NpQRNBBU-kIWy7dUl_IDRA&s" 
+            },
+
+            { 
+                name: "Firestorm (Ronnie Raymond & Martin Stein)",
+                gender: "Male", 
+                type: "Superhero", 
+                species: "Metahuman", 
+                powerType: ["Nuclear Manipulation", "Flight", "Energy Projection"], 
+                origin: "Earth", affiliations: ["Justice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1978, 
+                image: "https://i.pinimg.com/736x/8e/f0/06/8ef00644b75c8e6be0a7cb93cd0bcb27.jpg" 
+            },
+
+            {
+                 name: "Green Arrow (Oliver Queen)", 
+                 gender: "Male", 
+                 type: "Superhero", 
+                 species: "Human", 
+                 powerType: ["Archery Mastery", "Combat Skills"], 
+                 origin: "Earth", 
+                 affiliations: ["Justice League"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1941, 
+                 image: "https://static.wikia.nocookie.net/marvel_dc/images/2/29/Green_Arrow_Vol_6_1_Textless_Variant.jpg" 
+            },
+
+            { 
+                name: "Guardian (Jim Harper)", 
+                gender: "Male", 
+                type: "Superhero", 
+                species: "Human", 
+                powerType: ["Enhanced Strength", "Combat Skills"], 
+                origin: "Earth", 
+                affiliations: ["Newsboy Legion"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1942, 
+                image: "https://comicvine.gamespot.com/a/uploads/scale_medium/11114/111147698/6572908-screen%20shot%202018-08-22%20at%209.54.04%20am.png" 
+            },
+
+            { 
+                name: "Gorilla Grodd",
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Gorilla", 
+                powerType: ["Telepathy", "Superhuman Strength"], 
+                origin: "Earth", 
+                affiliations: ["Injustice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1959, 
+                image: "https://static.wikia.nocookie.net/monster/images/4/47/Grodd.png" 
+            },
+
+            {
+                 name: "Hawkman (Carter Hall)", 
+                 gender: "Male", 
+                 type: "Superhero", 
+                 species: "Metahuman", 
+                 powerType: ["Flight", "Superhuman Strength", "Weapon Mastery"], 
+                 origin: "Earth", 
+                 affiliations: ["Justice Society of America"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1940, 
+                 image: "https://static.wikia.nocookie.net/marvel_dc/images/2/25/Hawkman_Vol_5_1_Textless.jpg" 
+                },
+
+            { 
+                name: "Heat Wave (Mick Rory)", 
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Human", 
+                powerType: ["Pyrokinesis", "Heat Generation"], 
+                origin: "Earth", 
+                affiliations: ["Rogues"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1963, 
+                image: "https://static.wikia.nocookie.net/marvel_dc/images/a/a6/Heat_Wave_0004.jpg" 
+            },
+
+            {
+                 name: "Hush (Thomas Elliot)", 
+                 gender: "Male", 
+                 type: "Supervillain", 
+                 species: "Human", 
+                 powerType: ["Genius Intellect", "Surgical Skills"], 
+                 origin: "Earth", 
+                 affiliations: ["None"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 2003, 
+                 image: "https://static1.cbrimages.com/wordpress/wp-content/uploads/2020/09/Should-Thomas-Elliot-Hush.jpg.jpg" 
+            },
+            
+            { 
+                name: "Killer Frost (Caitlin Snow)", 
+                gender: "Female", 
+                type: "AntiHero", 
+                species: "Metahuman", 
+                powerType: ["Cryokinesis", "Heat Absorption"], 
+                origin: "Earth", 
+                affiliations: ["Justice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 2013, 
+                image: "https://static.wikia.nocookie.net/batman/images/d/df/Frost.jpg" 
+            },
+
+            {
+                 name: "King Shark (Nanaue)", 
+                 gender: "Male", 
+                 type: "Supervillain", 
+                 species: "Metahuman", 
+                 powerType: ["Superhuman Strength", "Aquatic Adaptation"], 
+                 origin: "Earth", 
+                 affiliations: ["Suicide Squad"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1994, 
+                 image: "https://platform.polygon.com/wp-content/uploads/sites/2/chorus/uploads/chorus_asset/file/22771406/954684._SX1280_QL80_TTD_.jpg?quality=90&strip=all&crop=0,0,100,77.248038624019" 
+                },
+
+            { 
+                name: "Killer Croc (Waylon Jones)", 
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Mutant", 
+                powerType: ["Superhuman Strength", "Aquatic Adaptation"], 
+                origin: "Earth", 
+                affiliations: ["Injustice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1983, 
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTN7Nbi88pOuD5eXE7KaDmy2D7kDxMrY0Yc_g&s" 
+            },
+
+            { 
+                name: "Katana (Tatsu Yamashiro)", 
+                gender: "Female", 
+                type: "Superhero", 
+                species: "Human", 
+                powerType: ["Swordsmanship", "Combat Skills"], 
+                origin: "Earth", 
+                affiliations: ["Outsiders"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1983, 
+                image: "data:image/webp;base64,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" 
+            },
+
+            {
+                 name: "Light (Arthur Light)", 
+                 gender: "Male", 
+                 type: "Supervillain", 
+                 species: "Human", 
+                 powerType: ["Light Manipulation", "Illusion Creation"], 
+                 origin: "Earth", 
+                 affiliations: ["Injustice League"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1963, 
+                 image: "https://comicvine.gamespot.com/a/uploads/original/0/3418/126444-54633-dr-light.jpg" 
+            },
+
+            {
+                 name: "Lobo", 
+                 gender: "Male", 
+                 type: "AntiHero", 
+                 species: "Czarnian", 
+                 powerType: ["Superhuman Strength", "Regeneration", "Flight"], 
+                 origin: "Czarnia", 
+                 affiliations: ["None"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1983, 
+                 image: "https://bloody-disgusting.com/wp-content/uploads/2014/09/lobo-david-finch.jpg" 
+            },
+
+            {
+                 name: "Captain Boomerang (George Harkness)", 
+                 gender: "Male", 
+                 type: "Supervillain", 
+                 species: "Human", 
+                 powerType: ["Boomerang Mastery", "Combat Skills"], 
+                 origin: "Earth", 
+                 affiliations: ["Rogues", "Suicide Squad"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1960, 
+                 image: "https://static.wikia.nocookie.net/marvel-dc/images/3/34/Preview-1536663539.jpg" 
+            },
+
+            { 
+                name: "Vandal Savage", 
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Immortal Human", 
+                powerType: ["Regeneration", "Combat Skills"], 
+                origin: "Earth", 
+                affiliations: ["Injustice Society"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1943, 
+                image: "https://static.wikia.nocookie.net/heroes-and-villain/images/1/15/Vandal_Savage_Once_and_Future_0001.jpg" 
+            },
+
+            { 
+                name: "Poison Ivy", 
+                gender: "Female", 
+                type: "Supervillain", 
+                species: "Metahuman", 
+                powerType: ["Chlorokinesis", "Pheromone Control", "Toxikinesis"], 
+                origin: "Earth", 
+                affiliations: ["Gotham City Sirens"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1966, 
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBhi1hY2rEAPXWSbGs1ORijxqmlsCyxqnnsg&s" 
+            },
+
+            { 
+                name: "Cheetah", 
+                gender: "Female", 
+                type: "Supervillain", 
+                species: "Metahuman", 
+                powerType: ["Superhuman Strength", "Superhuman Agility", "Superhuman Durability"], 
+                origin: "Earth", 
+                affiliations: ["Injustice League"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1943, 
+                image: "https://comicvine.gamespot.com/a/uploads/scale_small/6/61707/2676701-cheetah9a.jpg" 
+            },
+
+            {
+                 name: "Catwoman", 
+                 gender: "Female", 
+                 type: "AntiHero", 
+                 species: "Human", 
+                 powerType: ["Agility", "Stealth", "Master Acrobat", "Master Martial Artist"], 
+                 origin: "Earth", 
+                 affiliations: ["Gotham City Sirens"], 
+                 appearanceType: "Comics", 
+                 apparitionYear: 1940, 
+                 image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp7jp-vvGwFE8zMEoboUTh_zaZ0HpBt-xVNljYo3TtmdVCNcw6pKJnWW33X6SACugpLmU&usqp=CAU" 
+            },
+
+            { 
+                name: "Nightwing",
+                gender: "Male", 
+                type: "Superhero", 
+                species: "Human", 
+                powerType: ["Enhanced Strength", "Enhanced Durability", "Master Acrobat", "Agility", "Master Martial Artist", "expert gymnastic skills"], 
+                origin: "Earth", 
+                affiliations: ["Teen Titans"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1963, 
+                image: "https://upload.wikimedia.org/wikipedia/tr/2/25/Nightwing_0003.jpg" 
+            },
+
+            { 
+                name: "Lex Luthor", 
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "Human", 
+                powerType: ["Genius-level intellect"], 
+                origin: "Earth", 
+                affiliations: ["Legion of Doom"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1940, 
+                image: "https://static.wikia.nocookie.net/marvel_dc/images/4/4e/Doomsday_Clock_Vol_1_2_Variant_Textless.jpg" 
+            },
+
+            { 
+                name: "Darkseid", 
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "The New Gods", 
+                powerType: ["Superhuman Strength", "Flight", "Superhuman Durability", "Power Absorption", "Omega Beams"], 
+                origin: "Apokolips", 
+                affiliations: ["Apokolips"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1970, 
+                image: "https://static.wikia.nocookie.net/marvel_dc/images/6/62/Zeus_Prime_Earth_0002.jpg" 
+            },
+
+            {
+                name: "Steppenwolf ", 
+                gender: "Male", 
+                type: "Supervillain", 
+                species: "The New Gods", 
+                powerType: ["Superhuman Strength","Superhuman Durability"], 
+                origin: "Apokolips", 
+                affiliations: ["Apokolips"], 
+                appearanceType: "Comics", 
+                apparitionYear: 1972, 
+                image: "https://upload.wikimedia.org/wikipedia/en/9/98/Steppenwolf_Earth_2_1.png"
+            
+            },
+
+            { 
+            name: "Supergirl",
+            gender: "Female",
+            type: "Superhero", 
+            species: "Alien", 
+            powerType: ["Superhuman Strength", "Flight", "Superhuman Speed", "Superhuman Durability", "Super Senses"], 
+            origin: "Krypton", 
+            affiliations: ["Justice League"], 
+            appearanceType: "Comics", 
+            apparitionYear: 1959, 
+            image: "https://www.gamereactor.com.tr/media/36/report_4443673.jpg" 
+            },
+
+            { 
+            name: "Superboy",
+            gender: "Male",
+            type: "Superhero", 
+            species: "Human/Kryptonian ", 
+            powerType: ["Superhuman Strength", "Flight", "Superhuman Speed", "Superhuman Durability", "Super Senses"], 
+            origin: "Clone", 
+            affiliations: ["Teen Titans"], 
+            appearanceType: "Comics", 
+            apparitionYear: 1945, 
+            image: "https://static1.cbrimages.com/wordpress/wp-content/uploads/2019/08/Superboy-Feature-Cropped.jpg" 
+            },
+                
+            
+
+        ];
+        
+        let dailyCharacter = null;
+        let guessCount = 0;
+        let usedCharacters = [];
+        let guessedCharacters = [];
+        let currentLanguage = 'en';
+        let isSoundOn = false;
+
+        const backgroundMusic = new Audio("Sarkı/dcdle.mp3");
+        backgroundMusic.loop = true;
+
+        const translations = {
+            en: {
+                title: "DCdle",
+                placeholder: "Enter a DC Character...",
+                guessButton: "Guess",
+                homeButton: "Home",
+                congrats: "Congratulations!",
+                invalid: "Please enter a valid DC character!",
+                alreadyGuessed: "You already guessed this character!",
+                categories: {
+                    gender: "Gender",
+                    type: "Type",
+                    species: "Species",
+                    powerType: "Power Type(s)",
+                    origin: "Origin",
+                    affiliations: "Affiliations",
+                    appearanceType: "Appearance Type",
+                    apparitionYear: "Apparition Year"
+                }
+            },
+            tr: {
+                title: "DCdle",
+                placeholder: "Bir DC Karakteri Girin...",
+                guessButton: "Tahmin Et",
+                homeButton: "Anasayfa",
+                congrats: "Doğru Bildiniz!",
+                invalid: "Lütfen geçerli bir DC karakteri girin!",
+                alreadyGuessed: "Bu karakteri zaten tahmin ettiniz!",
+                categories: {
+                    gender: "Cinsiyet",
+                    type: "Tür",
+                    species: "Tür (Biyolojik)",
+                    powerType: "Güç Türü(ler)",
+                    origin: "Köken",
+                    affiliations: "Bağlantılar",
+                    appearanceType: "Görünüm Türü",
+                    apparitionYear: "Görünüm Yılı"
+                }
+            }
+        };
+
+        function toggleSound() {
+            const soundIcon = document.getElementById('soundIcon');
+            if (isSoundOn) {
+                backgroundMusic.pause();
+                soundIcon.textContent = '🔇';
+                isSoundOn = false;
+            } else {
+                backgroundMusic.play().catch(error => {
+                    console.log("Ses başlatılamadı:", error);
+                });
+                soundIcon.textContent = '🔊';
+                isSoundOn = true;
+            }
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            document.getElementById('guessInput').placeholder = translations[lang].placeholder;
+            document.querySelector('.guess-input button:nth-child(3)').textContent = translations[lang].guessButton;
+            document.querySelector('.restart-button').textContent = lang === 'en' ? 'Restart' : 'Yeniden Başlat';
+            document.getElementById('homeButton').textContent = translations[lang].homeButton;
+            const guessHistory = document.getElementById('guessHistory');
+            if (guessHistory.children.length > 0) {
+                Array.from(guessHistory.children).forEach(row => {
+                    const boxes = row.querySelectorAll('.category-box span');
+                    boxes[0].textContent = translations[lang].categories.gender;
+                    boxes[1].textContent = translations[lang].categories.type;
+                    boxes[2].textContent = translations[lang].categories.species;
+                    boxes[3].textContent = translations[lang].categories.powerType;
+                    boxes[4].textContent = translations[lang].categories.origin;
+                    boxes[5].textContent = translations[lang].categories.affiliations;
+                    boxes[6].textContent = translations[lang].categories.appearanceType;
+                    boxes[7].textContent = translations[lang].categories.apparitionYear;
+                });
+            }
+        }
+
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('visible');
+        }
+
+        function selectLanguage(lang) {
+            changeLanguage(lang);
+            toggleLanguageDropdown();
+        }
+
+        function goToHomePage() {
+            window.location.href = "../index.html";
+        }
+
+        function selectRandomCharacter() {
+            let availableCharacters = characters.filter(char => !usedCharacters.includes(char.name));
+            if (availableCharacters.length === 0) {
+                usedCharacters = [];
+                availableCharacters = characters;
+            }
+            const randomIndex = Math.floor(Math.random() * availableCharacters.length);
+            const selectedCharacter = availableCharacters[randomIndex];
+            usedCharacters.push(selectedCharacter.name);
+            return selectedCharacter;
+        }
+
+        dailyCharacter = selectRandomCharacter();
+
+        function showSuggestions() {
+            const input = document.getElementById('guessInput').value.toLowerCase();
+            const suggestions = document.getElementById('suggestions');
+            suggestions.innerHTML = '';
+
+            if (input.length > 0) {
+                const filteredChars = characters.filter(char => 
+                    char.name.toLowerCase().startsWith(input) && 
+                    !guessedCharacters.includes(char.name.toLowerCase())
+                );
+                if (filteredChars.length > 0) {
+                    filteredChars.forEach(char => {
+                        const div = document.createElement('div');
+                        div.className = 'suggestion-item';
+
+                        // Karakter resmini ekle
+                        const img = document.createElement('img');
+                        img.src = char.image;
+                        img.className = 'suggestion-image';
+                        div.appendChild(img);
+
+                        // Karakter adını ekle
+                        const nameSpan = document.createElement('span');
+                        nameSpan.textContent = char.name;
+                        div.appendChild(nameSpan);
+
+                        // Öneriye tıklama olayı
+                        div.onclick = () => {
+                            document.getElementById('guessInput').value = char.name;
+                            suggestions.style.display = 'none';
+                            checkGuess();
+                        };
+                        suggestions.appendChild(div);
+                    });
+                    suggestions.style.display = 'block';
+                } else {
+                    suggestions.style.display = 'none';
+                }
+            } else {
+                suggestions.style.display = 'none';
+            }
+        }
+
+        function resetGame() {
+            document.getElementById('guessHistory').innerHTML = '';
+            guessCount = 0;
+            document.getElementById('guessCount').textContent = guessCount;
+            guessedCharacters = [];
+            dailyCharacter = selectRandomCharacter();
+            document.getElementById('fireworks').style.display = 'none';
+            document.getElementById('fireworks').innerHTML = '';
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessInput').disabled = false;
+            document.querySelector('.restart-button').classList.remove('visible');
+        }
+
+        function fireworks() {
+            const fireworksContainer = document.getElementById('fireworks');
+            fireworksContainer.style.display = 'block';
+
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    createFirework();
+                }, i * 200);
+            }
+
+            const message = document.createElement('div');
+            message.className = 'firework-message';
+            message.textContent = translations[currentLanguage].congrats;
+            fireworksContainer.appendChild(message);
+
+            document.querySelector('.restart-button').classList.add('visible');
+        }
+
+        function createFirework() {
+            const fireworksContainer = document.getElementById('fireworks');
+            const firework = document.createElement('div');
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            firework.className = 'firework';
+            firework.style.left = `${x}px`;
+            firework.style.top = `${y}px`;
+            fireworksContainer.appendChild(firework);
+
+            const hue = Math.random() * 360;
+
+            setTimeout(() => {
+                firework.remove();
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'firework-particle';
+                    particle.style.left = '0';
+                    particle.style.top = '0';
+                    particle.style.setProperty('--hue', hue);
+                    firework.appendChild(particle);
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 5 + 5;
+                    const velocityX = Math.cos(angle) * speed;
+                    const velocityY = Math.sin(angle) * speed;
+
+                    particle.animate(
+                        [
+                            { transform: 'translate(0, 0)', opacity: 1 },
+                            { transform: `translate(${velocityX * 10}px, ${velocityY * 10}px)`, opacity: 0 }
+                        ],
+                        {
+                            duration: 1500,
+                            easing: 'ease-out'
+                        }
+                    );
+
+                    setTimeout(() => particle.remove(), 1500);
+                }
+            }, 100);
+        }
+
+        function checkGuess() {
+            const guessInput = document.getElementById('guessInput').value.trim();
+            if (!guessInput) {
+                alert(translations[currentLanguage].invalid);
+                return;
+            }
+
+            const guessedCharacter = characters.find(char => char.name.toLowerCase() === guessInput.toLowerCase());
+            if (!guessedCharacter) {
+                alert(translations[currentLanguage].invalid);
+                return;
+            }
+
+            if (guessedCharacters.includes(guessedCharacter.name.toLowerCase())) {
+                alert(translations[currentLanguage].alreadyGuessed);
+                document.getElementById('guessInput').value = '';
+                document.getElementById('suggestions').style.display = 'none';
+                return;
+            }
+
+            guessCount++;
+            document.getElementById('guessCount').textContent = guessCount;
+            guessedCharacters.push(guessedCharacter.name.toLowerCase());
+
+            const guessRow = document.createElement('div');
+            guessRow.className = 'guess-row';
+
+            const img = document.createElement('img');
+            img.src = guessedCharacter.image;
+            guessRow.appendChild(img);
+
+            const categoriesContainer = document.createElement('div');
+            categoriesContainer.className = 'categories-container';
+            categoriesContainer.style.display = 'flex';
+            categoriesContainer.style.flexWrap = 'wrap';
+            categoriesContainer.style.gap = '2px';
+            categoriesContainer.style.width = '100%';
+
+            const categories = [
+                { label: translations[currentLanguage].categories.gender, value: guessedCharacter.gender, correct: dailyCharacter.gender },
+                { label: translations[currentLanguage].categories.type, value: guessedCharacter.type, correct: dailyCharacter.type },
+                { label: translations[currentLanguage].categories.species, value: guessedCharacter.species, correct: dailyCharacter.species },
+                { label: translations[currentLanguage].categories.powerType, value: guessedCharacter.powerType.join(', '), correct: dailyCharacter.powerType.join(', '), isPower: true },
+                { label: translations[currentLanguage].categories.origin, value: guessedCharacter.origin, correct: dailyCharacter.origin },
+                { label: translations[currentLanguage].categories.affiliations, value: guessedCharacter.affiliations.join(', '), correct: dailyCharacter.affiliations.join(', '), isAffiliation: true },
+                { label: translations[currentLanguage].categories.appearanceType, value: guessedCharacter.appearanceType, correct: dailyCharacter.appearanceType },
+                { label: translations[currentLanguage].categories.apparitionYear, value: guessedCharacter.apparitionYear, correct: dailyCharacter.apparitionYear, isYear: true }
+            ];
+
+            categories.forEach((category, index) => {
+                const box = document.createElement('div');
+                box.className = 'category-box';
+                box.style.animationDelay = `${index * 0.4}s`;
+
+                const label = document.createElement('span');
+                label.textContent = category.label;
+                box.appendChild(label);
+
+                const value = document.createElement('div');
+                value.className = 'category-value';
+                value.textContent = category.value;
+
+                if (category.isYear) {
+                    const guessedYear = parseInt(category.value);
+                    const correctYear = parseInt(category.correct);
+                    if (guessedYear === correctYear) value.classList.add('correct');
+                    else if (Math.abs(guessedYear - correctYear) <= 5) value.classList.add('partial');
+                    else value.classList.add('incorrect');
+                } else if (category.isPower) {
+                    const guessedPowers = category.value.split(', ');
+                    const correctPowers = category.correct.split(', ');
+                    const hasMatch = guessedPowers.some(power => correctPowers.includes(power));
+                    const physicalPowers = ['Strength', 'Speed', 'Agility'];
+                    const hasPartialMatch = guessedPowers.some(power => physicalPowers.includes(power)) && correctPowers.some(power => physicalPowers.includes(power));
+                    if (category.value === category.correct) value.classList.add('correct');
+                    else if (hasMatch || hasPartialMatch) value.classList.add('partial');
+                    else value.classList.add('incorrect');
+                } else if (category.isAffiliation) {
+                    const guessedAffiliations = category.value.split(', ');
+                    const correctAffiliations = category.correct.split(', ');
+                    const hasMatch = guessedAffiliations.some(aff => correctAffiliations.includes(aff));
+                    if (category.value === category.correct) value.classList.add('correct');
+                    else if (hasMatch) value.classList.add('partial');
+                    else value.classList.add('incorrect');
+                } else {
+                    if (category.value === category.correct) value.classList.add('correct');
+                    else value.classList.add('incorrect');
+                }
+
+                box.appendChild(value);
+                categoriesContainer.appendChild(box);
+            });
+
+            guessRow.appendChild(categoriesContainer);
+            document.getElementById('guessHistory').appendChild(guessRow);
+
+            if (guessedCharacter.name.toLowerCase() === dailyCharacter.name.toLowerCase()) {
+                fireworks();
+                document.getElementById('guessInput').disabled = true;
+            } else {
+                document.getElementById('guessInput').value = '';
+            }
+
+            document.getElementById('suggestions').style.display = 'none';
+        }
+
+        document.addEventListener('click', function(e) {
+            const suggestions = document.getElementById('suggestions');
+            const dropdown = document.getElementById('languageDropdown');
+            if (!e.target.closest('.guess-input')) {
+                suggestions.style.display = 'none';
+            }
+            if (!e.target.closest('.language-menu')) {
+                dropdown.classList.remove('visible');
+            }
+        });
+
+        const guessCountElement = document.getElementById('guessCount');
+        guessCountElement.addEventListener('mouseover', function() {
+            guessCountElement.textContent = currentLanguage === 'en' ? 'Guess Count' : 'Tahmin Sayısı';
+        });
+        guessCountElement.addEventListener('mouseout', function() {
+            guessCountElement.textContent = guessCount;
+        });
+
+        // Yatay Yağmur Efekti Başlatma
+        function createRain() {
+            const rainContainer = document.getElementById('rain');
+            const raindropCount = 200; // Daha yoğun bir yağmur için damla sayısını artırdık
+
+            for (let i = 0; i < raindropCount; i++) {
+                const raindrop = document.createElement('div');
+                raindrop.className = 'raindrop';
+                
+                // Rastgele başlangıç konumu (dikey ve yatay eksende)
+                raindrop.style.top = `${Math.random() * 100}vh`; // Dikeyde rastgele başlangıç
+                raindrop.style.left = `${Math.random() * 100}vw`; // Yatayda rastgele başlangıç
+                
+                // Rastgele boyut ve hız
+                const width = Math.random() * 30 + 30; // 30px ile 60px arasında rastgele genişlik
+                raindrop.style.width = `${width}px`;
+                raindrop.style.opacity = Math.random() * 0.5 + 0.3; // 0.3 ile 0.8 arasında opacity
+                raindrop.style.animationDuration = `${Math.random() * 1.5 + 0.5}s`; // 0.5-2 saniye arası geçiş süresi
+                raindrop.style.animationDelay = `${Math.random() * 3}s`; // Rastgele gecikme
+                
+                rainContainer.appendChild(raindrop);
+            }
+        }
+
+        // Sayfa yüklendiğinde yağmuru başlat
+        window.onload = function() {
+            createRain();
+            changeLanguage('en');
+        };
+    </script>
+</body>
+</html>
