@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben10DLE - Guess the Character!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0a2f0a;
+            background-image: url("https://i.pinimg.com/originals/04/56/1c/04561c5d12e78ac49d5c9bc9902c2621.jpg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            width: 90%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.98;
+            box-shadow: 0 0 15px #0ce70c, 0 0 30px #37fc37, 0 0 40px #16af16;
+            animation: neonBlink 2s infinite alternate;
+            border-radius: 10px;
+        }
+
+        @keyframes neonBlink {
+            0% {
+                box-shadow: 0 0 10px #00FF00, 0 0 20px #00FF00, 0 0 25px #32CD32;
+                opacity: 0.95;
+            }
+            50% {
+                box-shadow: 0 0 20px #00FF00, 0 0 40px #00FF00, 0 0 50px #32CD32;
+                opacity: 0.98;
+            }
+            100% {
+                box-shadow: 0 0 15px #00FF00, 0 0 30px #00FF00, 0 0 40px #32CD32;
+                opacity: 0.96;
+            }
+        }
+
+        .settings {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 2;
+        }
+
+        .language-button {
+            position: relative;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .language-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #00FF00 10%, transparent 70%);
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+            z-index: -1;
+            animation: neonPulse 1.5s infinite alternate;
+        }
+
+        .language-button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .sound-button {
+            position: relative;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #fff;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .sound-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #00FF00 10%, transparent 70%);
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+            z-index: -1;
+            animation: neonPulse 1.5s infinite alternate;
+        }
+
+        .sound-button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes neonPulse {
+            0% {
+                opacity: 0.6;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0.9;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+
+        .sound-icon {
+            transition: all 0.3s ease;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: #222;
+            border: 1px solid #00FF00;
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+        }
+
+        .language-dropdown.visible {
+            display: block;
+        }
+
+        .language-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            color: transparent;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+            width: 40px;
+            height: 30px;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid #00FF00;
+            box-shadow: 0 0 5px #00FF00, 0 0 10px #00FF00, 0 0 15px #32CD32;
+            animation: neonGlowFlag 1.5s ease-in-out infinite alternate;
+        }
+
+        .language-option.en {
+            background-image: url("https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/1200px-Flag_of_the_United_Kingdom.svg.png");
+        }
+
+        .language-option.tr {
+            background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/1200px-Flag_of_Turkey.svg.png");
+        }
+
+        .language-option:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes neonGlowFlag {
+            0% {
+                box-shadow: 0 0 5px #00FF00, 0 0 10px #00FF00, 0 0 15px #32CD32;
+            }
+            100% {
+                box-shadow: 0 0 10px #00FF00, 0 0 20px #00FF00, 0 0 25px #32CD32;
+            }
+        }
+
+        .guess-count {
+            background: linear-gradient(45deg, #00FF00, #32CD32);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .guess-count:hover {
+            transform: scale(1.05);
+        }
+
+        .game-area {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00FF00;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .suggestions {
+            position: absolute;
+            background: #222;
+            border: 1px solid #00FF00;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            width: 300px;
+            z-index: 10;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 5px 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .suggestion-item:hover {
+            background: #444;
+        }
+
+        .suggestion-image {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 1px solid #00FF00;
+            object-fit: cover;
+        }
+
+        .guess-input {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .guess-input input {
+            padding: 10px;
+            width: 300px;
+            border: 2px solid #00FF00;
+            border-radius: 5px;
+            font-size: 1rem;
+            background: #222;
+            color: #fff;
+            box-shadow: 0 0 5px #00FF00, 0 0 10px #00FF00;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+        }
+
+        .guess-input input::placeholder {
+            color: #00FF00;
+            opacity: 0.8;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.8), 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .guess-input button {
+            padding: 10px 20px;
+            background-color: #00FF00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(0, 255, 0, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 3px #00FF00, 0 0 6px #00FF00;
+            opacity: 0.9;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .guess-input button:hover {
+            background-color: #32CD32;
+            box-shadow: 0 0 5px #00FF00, 0 0 8px #00FF00;
+            opacity: 1;
+            text-shadow: 0 0 8px rgba(255, 255, 247, 1), 0 0 12px rgba(0, 255, 0, 0.7);
+        }
+
+        .home-button {
+            padding: 10px 20px;
+            background-color: #00FF00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(0, 255, 0, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 3px #00FF00, 0 0 6px #00FF00;
+            opacity: 0.9;
+            animation: neonGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .home-button:hover {
+            background-color: #32CD32;
+            box-shadow: 0 0 5px #00FF00, 0 0 8px #00FF00, 0 0 12px #32CD32;
+            opacity: 1;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 12px rgba(0, 255, 0, 0.7);
+        }
+
+        @keyframes neonGlow {
+            0% {
+                box-shadow: 0 0 3px #00FF00, 0 0 6px #00FF00;
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(0, 255, 0, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 8px #00FF00, 0 0 15px #00FF00, 0 0 20px #32CD32;
+                text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 15px rgba(0, 255, 0, 0.8);
+            }
+        }
+
+        .restart-button {
+            padding: 10px 20px;
+            background-color: #00FF00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: none;
+        }
+
+        .restart-button.visible {
+            display: inline-block;
+        }
+
+        .restart-button:hover {
+            background-color: #32CD32;
+        }
+
+        .guess-result {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00FF00;
+            border-radius: 10px;
+        }
+
+        .guess-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
+            border-radius: 5px;
+            min-height: 60px;
+            flex-wrap: nowrap;
+        }
+
+        .guess-row img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            border: 2px solid #00FF00;
+            margin-right: 10px;
+        }
+
+        .categories-container {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 15px;
+            width: 100%;
+            max-width: 100%;
+            justify-content: flex-start;
+        }
+
+        .category-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            flex: 0 0 auto;
+            min-width: 90px;
+            max-width: 220px;
+            padding: 5px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .category-box span {
+            font-size: 0.7rem;
+            color: #00FF00;
+            white-space: nowrap;
+        }
+
+        .category-value {
+            font-size: 0.7rem;
+            padding: 4px 6px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            max-width: 100%;
+            text-align: center;
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .correct { background-color: #228b22; }
+        .incorrect { background-color: #8b0000; }
+        .partial { background-color: #ff8c00; }
+
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            display: none;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #fff;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { opacity: 1; transform: scale(0); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: scale(10); }
+        }
+
+        .firework-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: hsl(var(--hue), 80%, 60%);
+            border-radius: 50%;
+            animation: fade 1.5s ease-out forwards;
+        }
+
+        @keyframes fade {
+            to { opacity: 0; transform: translateY(-50px) scale(0.5); }
+        }
+
+        .firework-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: #fff;
+            text-shadow: 0 0 15px #fff, 0 0 30px #00FF00, 0 0 45px #32CD32;
+            opacity: 0;
+            animation: fadeInOut 2s ease-in-out forwards;
+            font-weight: bold;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        @media (max-width: 600px) {
+            .category-box {
+                min-width: 70px;
+                max-width: 160px;
+                padding: 3px;
+            }
+            .guess-row img {
+                width: 40px;
+                height: 40px;
+            }
+            .category-value {
+                font-size: 0.6rem;
+                padding: 2px 4px;
+            }
+            .categories-container {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .guess-row {
+                flex-wrap: wrap;
+            }
+            .categories-container {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .category-box {
+                flex: 1 0 110px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="https://wallpapercave.com/wp/wp10597835.jpg" alt="Ben10DLE Logo" />
+            <div class="settings">
+                <div class="language-menu">
+                    <button class="language-button" onclick="toggleLanguageDropdown()">🌐</button>
+                    <div class="language-dropdown" id="languageDropdown">
+                        <div class="language-option en" onclick="selectLanguage('en')">EN</div>
+                        <div class="language-option tr" onclick="selectLanguage('tr')">TR</div>
+                    </div>
+                </div>
+                <button class="sound-button" id="soundButton" onclick="toggleSound()">
+                    <span class="sound-icon" id="soundIcon">🔇</span>
+                </button>
+                <span class="guess-count" id="guessCount">0</span>
+            </div>
+        </header>
+        <div class="game-area">
+            <div class="guess-input">
+                <input type="text" id="guessInput" placeholder="Enter a Ben 10 Character..." oninput="showSuggestions()" />
+                <div id="suggestions" class="suggestions"></div>
+                <button onclick="checkGuess()">Guess</button>
+                <button class="home-button" id="homeButton" onclick="goToHomePage()">Home</button>
+                <button class="restart-button" onclick="resetGame()">Restart</button>
+            </div>
+            <div class="guess-result" id="guessResult">
+                <!-- Guesses will stack here -->
+            </div>
+        </div>
+    </div>
+    <div id="fireworks"></div>
+
+    <script>
+        const characters = [
+            {
+                name: "Ben Tennyson",
+                image: "https://m.media-amazon.com/images/M/MV5BNjQwYzJhMTYtN2JmYy00MTYxLThmZDgtY2NiNDMyZTk5YWM2XkEyXkFqcGdeQXVyNzU1NzE3NTg@._V1_QL75_UX500_CR0,47,500,281_.jpg",
+                gender: "Male",
+                type: "Superhero",
+                power: "Omnitrix Usage, Strategic Intelligence, Combat Skills",
+                firstAppearance: "Ben 10 Classic",
+                species: "Human"
+            },
+            {
+                name: "Gwen Tennyson",
+                image: "https://i.ytimg.com/vi/SL11xK1vV7U/sddefault.jpg",
+                gender: "Female",
+                type: "Superhero",
+                power: "Magic, Mana Manipulation, Enhanced Intelligence, Martial Arts",
+                firstAppearance: "Ben 10 Classic",
+                species: "Human (Anodite Hybrid)"
+            },
+            {
+                name: "Kevin Levin",
+                image: "https://i.pinimg.com/736x/63/d3/f7/63d3f7c2be913c1b98704f639533ba79.jpg",
+                gender: "Male",
+                type: "Superhero",
+                power: "Energy Absorption, Matter Manipulation",
+                firstAppearance: "Ben 10 Classic",
+                species: "Human (Osmosian Hybrid)"
+            },
+            {
+                name: "Max Tennyson",
+                image: "https://assets.mycast.io/characters/max-tennyson-55681594-normal.jpg",
+                gender: "Male",
+                type: "Superhero",
+                power: "Plumber Training, Tactical Expertise",
+                firstAppearance: "Ben 10 Classic",
+                species: "Human"
+            },
+            {
+              name: "Vilgax", 
+              image: "https://m.media-amazon.com/images/M/MV5BNjhkZTUwNTAtMjg2ZC00Nzc1LThjNDgtYzM3M2ZkOTYwMzgzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+              gender: "Male",
+              type: "Villain",
+              power: "Super Strength, Invulnerability, Tactical Genius, Enhanced Durability",
+              firstAppearance: "Ben 10 Classic",
+              species: "Chimera Sui Generis"
+            },
+            {
+        name: "Dr. Animo", 
+        image: "https://static.wikia.nocookie.net/mutantanimals/images/e/eb/Dr._Animo_in_Ben_10_018.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Mad Scientist, Mutation Control, Genius-Level Intellect",
+        firstAppearance: "Ben 10 Classic",
+        species: "Human"
+    },
+    {
+        name: "Hex", 
+        image: "https://static.wikia.nocookie.net/feat-directory/images/e/ed/Hex_Original_Series_%28Ben_10%29-Original.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Dark Magic, Spellcasting, Immortality",
+        firstAppearance: "Ben 10 Classic",
+        species: "Human"
+    },
+    {
+        name: "Charmcaster", 
+        image: "https://i.ytimg.com/vi/agEe9bYgd1E/hq720.jpg",
+        gender: "Female",
+        type: "Villain",
+        power: "Dark Magic, Spellcasting, Energy Projection",
+        firstAppearance: "Ben 10 Classic",
+        species: "Human"
+    },
+    {
+        name: "Tetrax Shard", 
+        image: "https://static.wikia.nocookie.net/ben10/images/e/e6/Tetrax_profile.png",
+        gender: "Male",
+        type: "Superhero",
+        power: "Expert Combatant, Advanced Technology, Enhanced Durability",
+        firstAppearance: "Ben 10 Classic",
+        species: "Petrosapien"
+    },
+    {
+        name: "Zs'Skayr (Ghostfreak)", 
+        image: "https://www.superherodb.com/pictures2/portraits/10/050/27227.jpg",
+        gender: "Male",
+        type: "Villain",
+        power: "Intangibility, Possession, Fear Manipulation",
+        firstAppearance: "Ben 10 Classic",
+        species: "Ectonurite"
+    },
+    {
+        name: "Lt. Steel", 
+        image: "https://static.wikia.nocookie.net/ben10/images/a/a2/Lt._Steel_OS.png",
+        gender: "Male",
+        type: "Superhero",
+        power: "Tactical Leadership, Military Training",
+        firstAppearance: "Ben 10 Classic",
+        species: "Human"
+    },
+    {
+        name: "Eon", 
+        image: "https://static.wikia.nocookie.net/ben10/images/d/d0/Eon_ua.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Time Manipulation, Energy Projection, Superhuman Strength",
+        firstAppearance: "Ben 10 Ultimate Alien",
+        species: "Unknown"
+    },
+    {
+        name: "Xylene", 
+        image: "https://assets.mycast.io/characters/xylene-6900625-normal.jpg",
+        gender: "Female",
+        type: "Superhero",
+        power: "Enhanced Intelligence, Space Travel, Technological Expertise",
+        firstAppearance: "Ben 10 Classic",
+        species: "Uxorite"
+    },
+    {
+        name: "Sixsix", 
+        image: "https://static.wikia.nocookie.net/feat-directory/images/5/5a/Sixsix_Original_Series_%28Ben_10%29-Original.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Advanced Weaponry, Jetpack Flight, Combat Skills",
+        firstAppearance: "Ben 10 Classic",
+        species: "Sotoraggian"
+    },
+    {
+        name: "Kraab", 
+        image: "https://static.wikia.nocookie.net/ben10/images/5/5d/Kraab_os.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Armored Exoskeleton, Water Adaptation, Energy Blasts",
+        firstAppearance: "Ben 10 Classic",
+        species: "Piscciss Premann"
+    },
+    {
+        name: "Rojo", 
+        image: "https://static.wikia.nocookie.net/ben10/images/f/fd/Rojo3.png",
+        gender: "Female",
+        type: "Villain",
+        power: "Enhanced Strength, Cybernetic Enhancements, Weapon Proficiency",
+        firstAppearance: "Ben 10 Classic",
+        species: "Human (Cyborg)"
+    },
+    {
+        name: "Clancy", 
+        image: "https://static.wikia.nocookie.net/ben10/images/5/56/Clancy.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Insect Manipulation, Superhuman Durability",
+        firstAppearance: "Ben 10 Classic",
+        species: "Mutant"
+    },
+   
+    {
+        name: "Technorg", 
+        image: "https://static.wikia.nocookie.net/ben10/images/8/85/Technorg_new.png",
+        gender: "Male",
+        type: "Gladiator",
+        power: "Super Strength, Energy Blasts, Weapon Mastery",
+        firstAppearance: "Ben 10 Classic",
+        species: "Unknown"
+    },
+    {
+        name: "Driscoll (Forever King)", 
+        image: "https://static.wikia.nocookie.net/villains/images/0/0a/Driscoll_Forever_King_3.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Strategic Genius, Advanced Technology, Skilled Combatant",
+        firstAppearance: "Ben 10 Classic",
+        species: "Human"
+    },
+    {
+        name: "The Yenaldooshi", 
+        image: "https://static.wikia.nocookie.net/mutantanimals/images/4/4f/Loboan.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Super Speed, Enhanced Strength, Shape-Shifting",
+        firstAppearance: "Ben 10 Classic",
+        species: "Werewolf"
+    },
+    {
+        name: "Acid Breath", 
+        image: "https://static.wikia.nocookie.net/ben10/images/4/48/Ben10AcidBreath.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Acidic Saliva, Super Strength, Enhanced Durability",
+        firstAppearance: "Ben 10 Classic",
+        species: "Mutant"
+    },
+    {
+        name: "Albedo", 
+        image: "https://static.wikia.nocookie.net/adventures-of-chris-and-tifa/images/c/cd/Albedo.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Omnitrix Usage, Genius-Level Intellect, Combat Skills",
+        firstAppearance: "Ben 10 Alien Force",
+        species: "Galvan"
+    },
+    {
+        name: "Darkstar (Michael Morningstar)", 
+        image: "https://i.ytimg.com/vi/RxMel_tibo8/maxresdefault.jpg",
+        gender: "Male",
+        type: "Villain",
+        power: "Energy Absorption, Life-Force Drain, Super Strength",
+        firstAppearance: "Ben 10 Alien Force",
+        species: "Human (Mutant)"
+    },
+    {
+        name: "Helen Wheels", 
+        image: "https://static.wikia.nocookie.net/ben-10-list/images/9/98/Helen_Wheels_%28Alien_Force%29.png",
+        gender: "Female",
+        type: "Superhero",
+        power: "Super Speed, Enhanced Agility",
+        firstAppearance: "Ben 10 Alien Force",
+        species: "Kineceleran-Human Hybrid"
+    },
+    {
+        name: "Pierce Wheels", 
+        image: "https://static.wikia.nocookie.net/ben-10-list/images/a/a0/Pierce_Wheels_%28Ultimate_Alien%29.png",
+        gender: "Male",
+        type: "Superhero",
+        power: "Enhanced Durability, Body Spikes, Combat Skills",
+        firstAppearance: "Ben 10 Alien Force",
+        species: "Human-Mutant Hybrid"
+    },
+    {
+        name: "Manny Armstrong", 
+        image: "https://static.wikia.nocookie.net/ben-10-list/images/2/24/Manny_Armstrong_%28Alien_Force%29.png",
+        gender: "Male",
+        type: "Superhero",
+        power: "Enhanced Strength, Enhanced Reflexes",
+        firstAppearance: "Ben 10 Alien Force",
+        species: "Tetramand-Human Hybrid"
+    },
+    {
+        name: "Verdona", 
+        image: "https://static.wikia.nocookie.net/ben10/images/3/36/WALGMO_%28209%29.png",
+        gender: "Female",
+        type: "Superhero",
+        power: "Mana Manipulation, Energy Projection, Immortality",
+        firstAppearance: "Ben 10 Alien Force",
+        species: "Anodite"
+    },
+    {
+        name: "Argit", 
+        image: "https://static.wikia.nocookie.net/ben10/images/d/d3/Argit_in_Alein_Force_and_Ultimate_Alien.png",
+        gender: "Male",
+        type: "Antihero",
+        power: "Spikes Projection, Negotiation Skills, Trickery",
+        firstAppearance: "Ben 10 Alien Force",
+        species: "Vulpimancer Hybrid"
+    },
+    {
+        name: "Highbreed Commander", 
+        image: "https://static.wikia.nocookie.net/ben10/images/3/34/Highbreed_Commander.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Super Strength, Energy Projection, Enhanced Durability",
+        firstAppearance: "Ben 10 Alien Force",
+        species: "Highbreed"
+    },
+    {
+        name: "Aggregor", 
+        image: "https://i.ytimg.com/vi/87hx7voRaTE/hqdefault.jpg",
+        gender: "Male",
+        type: "Villain",
+        power: "Absorption, Super Strength, Energy Manipulation",
+        firstAppearance: "Ben 10 Ultimate Alien",
+        species: "Osmosian"
+    },
+    {
+        name: "Sir George", 
+        image: "https://static.wikia.nocookie.net/ben10/images/1/12/Helmet_Sir_George.png",
+        gender: "Male",
+        type: "Antihero",
+        power: "Immortality, Sword Mastery, Enhanced Strength",
+        firstAppearance: "Ben 10 Ultimate Alien",
+        species: "Human (Enhanced)"
+    },
+    {
+        name: "Diagon", 
+        image: "https://static.wikia.nocookie.net/ben10/images/5/54/Dagon_Profile.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Reality Warping, Telepathy, Energy Manipulation",
+        firstAppearance: "Ben 10 Ultimate Alien",
+        species: "Interdimensional Being"
+    },
+    {
+        name: "Vulkanus", 
+        image: "https://static.wikia.nocookie.net/ben10/images/d/d2/Vulkanus_OS_Profile.png",
+        gender: "Male",
+        type: "Antihero",
+        power: "Super Strength, Fire Resistance, Metal Manipulation",
+        firstAppearance: "Ben 10 Classic ",
+        species: "Magma Alien"
+    },
+    {
+        name: "Elena Validus", 
+        image: "https://static.wikia.nocookie.net/cn-cartoonnetwork/images/9/93/Elena.PNG",
+        gender: "Female",
+        type: "Antihero",
+        power: "Nanotechnology Control, Enhanced Intelligence",
+        firstAppearance: "Ben 10 Ultimate Alien",
+        species: "Human"
+    },
+    {
+        name: "Victor Validus", 
+        image: "https://static.wikia.nocookie.net/ben10/images/f/ff/Victor_ua.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Nanotechnology Manipulation, Super Strength",
+        firstAppearance: "Ben 10 Ultimate Alien",
+        species: "Human (Mutated)"
+    },
+
+    
+    {
+        name: "Will Harangue", 
+        image: "https://static.wikia.nocookie.net/ben10/images/9/93/Harangue_ua.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Media Influence, Persuasion",
+        firstAppearance: "Ben 10 Ultimate Alien",
+        species: "Human"
+    },
+    {
+        name: "Dr. Joseph Chadwick", 
+        image: "https://static.wikia.nocookie.net/villains/images/d/db/Joseph_Chadwick.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Advanced Technology, Enhanced Intelligence",
+        firstAppearance: "Ben 10 Ultimate Alien",
+        species: "Human"
+    },
+    {
+        name: "Rook Blonko", 
+        image: "https://i.ytimg.com/vi/ydXhQHlAyhQ/sddefault.jpg",
+        gender: "Male",
+        type: "Superhero",
+        power: "Expert Combatant, Proto-Tool Mastery, Enhanced Reflexes",
+        firstAppearance: "Ben 10 Omniverse",
+        species: "Revonnahgander"
+    },
+    {
+        name: "Khyber", 
+        image: "https://static.wikia.nocookie.net/ben10/images/9/9d/Trouble_Helix_%28596%29.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Master Tracker, Expert Combatant, Uses Nemetrix",
+        firstAppearance: "Ben 10 Omniverse",
+        species: "Unknown"
+    },
+    {
+        name: "Malware", 
+        image: "https://static.wikia.nocookie.net/ben10/images/d/d0/Malware_with_Tachyon_Cannon_in_his_right_hand.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Technological Absorption, Regeneration, Energy Manipulation",
+        firstAppearance: "Ben 10 Omniverse",
+        species: "Galvanic Mechamorph"
+    },
+    
+    {
+        name: "Dr. Psychobos", 
+        image: "https://static.wikia.nocookie.net/ben10fanfiction/images/c/ce/Dr._Psychobosovfront.png",
+        gender: "Male",
+        type: "Villain",
+        power: "Genius Intelligence, Technology Mastery",
+        firstAppearance: "Ben 10 Omniverse",
+        species: "Cerebrocrustacean"
+    },
+    {
+        name: "Blukic", 
+        image: "https://static.wikia.nocookie.net/ben10/images/1/1e/Blukic_Profile.png",
+        gender: "Male",
+        type: "Superhero",
+        power: "Engineering, High Intelligence",
+        firstAppearance: "Ben 10 Omniverse",
+        species: "Galvan"
+    },
+    {
+        name: "Driba", 
+        image: "https://static.wikia.nocookie.net/ben10/images/d/df/Driba_Profile.png",
+        gender: "Male",
+        type: "Superhero",
+        power: "Engineering, High Intelligence",
+        firstAppearance: "Ben 10 Omniverse",
+        species: "Galvan"
+    },
+   
+    {
+        name: "Zed", 
+        image: "https://static.wikia.nocookie.net/ben10/images/3/3c/Zed_No_Collar.png",
+        gender: "Female",
+        type: "Pet/Companion",
+        power: "Super Speed, Enhanced Senses",
+        firstAppearance: "Ben 10 Omniverse",
+        species: "Anubian Baskurr"
+    },
+    {
+        name: "Ma Vreedle", 
+        image: "https://static.wikia.nocookie.net/ben10/images/7/73/Ma_Vreedle.PNG",
+        gender: "Female",
+        type: "Villain",
+        power: "Regeneration, Enhanced Strength",
+        firstAppearance: "Ben 10 Omniverse",
+        species: "Vreedle"
+    },
+ { 
+    name: "Devlin Levin",
+    image: "https://static.wikia.nocookie.net/ben10/images/e/e2/Devlin_profile.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Osmosian Absorption, Enhanced Strength",
+    firstAppearance: "Ben 10 Classic",
+    species: "Human/Osmosian"
+},
+{
+    name: "Ken Tennyson",
+    image: "https://static.wikia.nocookie.net/ben10/images/4/4a/Ken_Good_Quality.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Omnitrix Usage, Time Travel, Teleportation",
+    firstAppearance: "Ben 10 Classic",
+    species: "Human"
+},
+{
+    name: "Limax",
+    image: "https://static.wikia.nocookie.net/ben10/images/c/ce/Limax.png",
+    gender: "Both",
+    type: "Villain",
+    power: "Shapeshifting, Acidic Slime, Enhanced Durability",
+    firstAppearance: "Ben 10 Classic",
+    species: "Limaxian"
+},
+
+{
+    name: "Sublimino",
+    image: "https://static.wikia.nocookie.net/villains/images/5/58/300px-Sublimino5.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Mind Control, Hypnosis",
+    firstAppearance: "Ben 10 Classic",
+    species: "Human"
+},
+{
+    name: "Dr. Viktor",
+    image: "https://static.wikia.nocookie.net/ben10/images/d/d7/ViktorHD.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Super Strength, Electrical Absorption, Enhanced Durability",
+    firstAppearance: "Ben 10 Classic",
+    species: "Transylian"
+},
+{
+    name: "Mummy",
+    image: "https://static.wikia.nocookie.net/ben10/images/1/18/Wraps_%28523%29.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Elasticity, Regeneration, Enhanced Durability",
+    firstAppearance: "Ben 10 Classic",
+    species: "Thep Khufan"
+},
+{
+    name: "Red Knight",
+    image: "https://static.wikia.nocookie.net/ben10/images/0/05/Red_Knight_OS.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Expert Swordsman, Enhanced Strength, Durability",
+    firstAppearance: "Ben 10 Classic",
+    species: "Robot"
+},
+{
+    name: "Enoch",
+    image: "https://static.wikia.nocookie.net/ben10/images/8/8f/Enoch_os_render.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Strategic Intelligence, Leadership, Hand-to-Hand Combat",
+    firstAppearance: "Ben 10 Classic",
+    species: "Human"
+},
+{
+    name: "Slix Vigma",
+    image: "https://static.wikia.nocookie.net/ben10/images/4/40/SlixVigma.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Business Manipulation, High Intelligence",
+    firstAppearance: "Ben 10 Classic",
+    species: "Robot"
+},
+{
+    name: "Phillip Billings",
+    image: "https://static.wikia.nocookie.net/ben10/images/6/69/Phil_os.png",
+    gender: "Male",
+    type: "Villain",
+    power: "High Intelligence, Investigation Skills",
+    firstAppearance: "Ben 10 Classic",
+    species: "Human"
+},
+{
+    name: "Thumbskull",
+    image: "https://static.wikia.nocookie.net/ben10/images/6/62/Thumbskull.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Super Strength, Enhanced Durability",
+    firstAppearance: "Ben 10 Classic",
+    species: "Mutant"
+},
+{
+    name: "Frightwig",
+    image: "https://static.wikia.nocookie.net/ben10/images/6/64/Laugh_%28425%29.png",
+    gender: "Female",
+    type: "Villain",
+    power: "Prehensile Hair, Enhanced Agility",
+    firstAppearance: "Ben 10 Classic",
+    species: "Mutant"
+},
+{
+    name: "Gaterboy",
+    image: "https://static.wikia.nocookie.net/ben10/images/e/e6/Gaterboy_New.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Enhanced Strength, Sharp Teeth, Aquatic Adaptation",
+    firstAppearance: "Ben 10 Classic",
+    species: "Mutant"
+},
+{
+    name: "Porcupine",
+    image: "https://static.wikia.nocookie.net/ben10/images/1/1c/Porcupine.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Quill Projection, Enhanced Durability",
+    firstAppearance: "Ben 10 Classic",
+    species: "Mutant"
+},
+{
+    name: "Krakken",
+    image: "https://static.wikia.nocookie.net/ben10/images/7/78/The_Krakken.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Super Strength, Underwater Breathing, Tentacle Attacks",
+    firstAppearance: "Ben 10 Classic",
+    species: "Sea Monster"
+},
+{
+    name: "Cash Murray",
+    image: "https://static.wikia.nocookie.net/ben10/images/1/1e/Originalcash.png",
+    gender: "Male",
+    type: "None",
+    power: "None",
+    firstAppearance: "Ben 10 Classic",
+    species: "Human"
+},
+{
+    name: "Synaptak",
+    image: "https://static.wikia.nocookie.net/ben10/images/e/e1/Galactic_%28978%29.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Telekinesis, Telepathy, Levitation",
+    firstAppearance: "Ben 10 Classic",
+    species: "Opticoid"
+},
+{
+    name: "Ultimos",
+    image: "https://static.wikia.nocookie.net/ben10/images/b/bd/Ultimos_OS.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Super Strength, Flight, Energy Projection, Heat Vision, Ice Breath",
+    firstAppearance: "Ben 10 Classic",
+    species: "Unknown"
+},
+{
+    name: "Gluto",
+    image: "https://static.wikia.nocookie.net/ben10/images/c/c3/Gluto_Profile.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Elasticity, Regeneration, Adhesion",
+    firstAppearance: "Ben 10 Classic",
+    species: "Protost"
+},
+{
+    name: "Kai Green",
+    image: "https://static.wikia.nocookie.net/ben10/images/6/6d/Kai_OV_Alternate_Outfit.png",
+    gender: "Female",
+    type: "Superhero",
+    power: "None",
+    firstAppearance: "Ben 10 Classic",
+    species: "Human"
+},
+{
+    name: "Myaxx",
+    image: "https://static.wikia.nocookie.net/ben10/images/9/9a/Myaxx.png",
+    gender: "Female",
+    type: "Superhero",
+    power: "Enhanced Strength, Enhanced Durability, Enhanced Dexterity, Enhanced Intelligence",
+    firstAppearance: "Ben 10 Classic",
+    species: "Chimera Sui Generis"
+},
+{
+    name: "Cooper Daniels",
+    image: "https://static.wikia.nocookie.net/ben10/images/a/af/Ultimate_Alien_cooper.PNG",
+    gender: "Male",
+    type: "Superhero",
+    power: "Technopathy, Enhanced Intelligence",
+    firstAppearance: "Ben 10 Classic",
+    species: "Human"
+},
+{
+    name: "Professor Paradox",
+    image: "https://static.wikia.nocookie.net/ben10/images/c/c1/Paradox_ua_full.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Time Travel, Immortality, Enhanced Intelligence",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Human"
+},
+{
+    name: "Azmuth",
+    image: "https://static.wikia.nocookie.net/ben10/images/d/d0/Azmutrix.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Genius-Level Intelligence, Inventor, Technopathy",
+    firstAppearance: "Ben 10 Classic",
+    species: "Galvan"
+},
+{
+    name: "Julie Yamamoto",
+    image: "https://static.wikia.nocookie.net/ben10/images/2/2a/JulieCycle.png",
+    gender: "Female",
+    type: "Superhero",
+    power: "None",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Human"
+},
+{
+    name: "Ship",
+    image: "https://static.wikia.nocookie.net/ben10/images/a/ab/Ship_003.png",
+    gender: "None",
+    type: "Superhero",
+    power: "Shapeshifting, Technological Merging, Enhanced Durability",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Galvanic Mechamorph"
+},
+{
+    name: "Alan Albright",
+    image: "https://static.wikia.nocookie.net/ben10/images/2/20/Badger_a.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Pyrokinesis, Heat Resistance, Enhanced Durability",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Human-Pyronite Hybrid"
+},
+{
+    name: "Serena",
+    image: "https://static.wikia.nocookie.net/ben10/images/c/cd/2011-09-10_0040.png",
+    gender: "Female",
+    type: "Superhero",
+    power: "Energy Manipulation, Flight",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Celestialsapien"
+},
+{
+    name: "Bellicus",
+    image: "https://static.wikia.nocookie.net/ben10/images/a/a6/Bellicus_model.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Energy Manipulation, Flight",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Celestialsapien"
+},
+{
+    name: "Cosmic Mom",
+    image: "https://static.wikia.nocookie.net/ben-10-list/images/3/39/Naljian_mother_%28Alien_Force%29.png",
+    gender: "Female",
+    type: "Superhero",
+    power: "Reality Warping, Cosmic Awareness, Immortality",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Naljian"
+},
+{
+    name: "Magister Prior Gilhil",
+    image: "https://static.wikia.nocookie.net/ben10/images/4/4d/Gilhil_badge.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Enhanced Strength, Plumber Training",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Unknown"
+},
+{
+    name: "Magister Labrid",
+    image: "https://static.wikia.nocookie.net/ben10/images/f/f5/Labridsreturn.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Underwater Breathing, Investigative Skills, Plumber Training, Expert Marksman",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Aquarian"
+},
+{
+    name: "Michael Morningstar",
+    image: "https://static.wikia.nocookie.net/ben10/images/7/71/Hamsome.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Energy Absorption, Energy Projection, Enhanced Strength",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Human Mutate"
+},
+{
+    name: "Psyphon",
+    image: "https://static.wikia.nocookie.net/ben10/images/4/43/UAF_PSYPHON.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Enhanced Intelligence, Tactical Expertise, Energy Blasts",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Unknown"
+},
+{
+    name: "Attea",
+    image: "https://static.wikia.nocookie.net/villains/images/e/ec/Attea_en_OV_2.png",
+    gender: "Female",
+    type: "Villain",
+    power: "Enhanced Agility, Amphibious Physiology, Expert Combatant",
+    firstAppearance: "Ben 10 Omniverse",
+    species: "Incursean"
+},
+{
+    name: "Milleous",
+    image: "https://static.wikia.nocookie.net/ben10/images/c/cd/Milleous_OV.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Enhanced Durability, Political Influence",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Incursean"
+},
+{
+    name: "Simian",
+    image: "https://static.wikia.nocookie.net/ben10/images/f/fe/BF%2855%29.png",
+    gender: "Male",
+    type: "Anti-Hero",
+    power: "Enhanced Agility, Wall Crawling, Stealth",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Arachnachimp"
+},
+{
+    name: "Sunder",
+    image: "https://static.wikia.nocookie.net/ben10/images/c/cc/Sunder_UAF.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Enhanced Strength, Expert Bounty Hunter, Energy Weapons",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Unknown"
+},
+{
+    name: "Ragnarok",
+    image: "https://static.wikia.nocookie.net/ben10/images/3/34/Vendetta_%28451%29.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Enhanced Strength, Energy Manipulation, Regeneration",
+    firstAppearance: "Ben 10 Alien Force",
+    species: "Unknown"
+},
+{
+    name: "Skurd",
+    image: "https://static.wikia.nocookie.net/ben10/images/c/c8/No_symbol_skurd.png",
+    gender: "Male",
+    type: "Anti-Hero",
+    power: "Biomorphing, Enhanced Intelligence, Adaptive Physiology",
+    firstAppearance: "Ben 10 Omniverse",
+    species: "Slimebiote"
+},
+{
+    name: "Ester",
+    image: "https://static.wikia.nocookie.net/ben10/images/b/bf/RoE_%28154%29.png",
+    gender: "Female",
+    type: "Superhero",
+    power: "Enhanced Strength, Enhanced Agility, Underground Navigation",
+    firstAppearance: "Ben 10 Omniverse",
+    species: "Undergrounder"
+},
+{
+    name: "Looma Red Wind",
+    image: "https://static.wikia.nocookie.net/ben10/images/d/d7/RoE_%28195%29.png",
+    gender: "Female",
+    type: "Superhero",
+    power: "Enhanced Strength, Enhanced Durability, Expert Combatant",
+    firstAppearance: "Ben 10 Omniverse",
+    species: "Tetramand"
+},
+{
+    name: "Lord Transyl",
+    image: "https://static.wikia.nocookie.net/ben10/images/9/9b/VSB_%28339%29.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Vampiric Abilities, Shape-Shifting, Superhuman Strength",
+    firstAppearance: "Ben 10 Omniverse",
+    species: "Vampire"
+},
+{
+    name: "Zombozo",
+    image: "https://static.wikia.nocookie.net/ben10/images/6/62/HEWTL_%28460%29.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Illusion Creation, Mind Control, Strength Drain",
+    firstAppearance: "Ben 10 Classic",
+    species: "Human"
+},
+{
+    name: "Galactic Gladiator",
+    image: "https://static.wikia.nocookie.net/ben10/images/3/3f/Galactic_gladiator.png",
+    gender: "Male",
+    type: "Celestialsapien",
+    power: "Enhanced Strength, Energy Manipulation, Combat Skills, Mental Reality Warping, Unlimited Powers",
+    firstAppearance: "Ben 10 Omniverse",
+    species: "Celestialsapien"
+},
+{
+    name: "Eunice",
+    image: "https://static.wikia.nocookie.net/ben10/images/9/98/Eunice_%28Ben_10_UA_-_SS%29.png",
+    gender: "Female",
+    type: "Superhero",
+    power: "Biokinesis, Limited Transformation, DNA Absorption, Ability Replication, Animal Taming, Enhanced Intelligence, Animal Empathy",
+    firstAppearance: "Ben 10 Ultimate Alien",
+    species: "Artificial Human"
+},
+{
+    name: "Maltruant",
+    image: "https://static.wikia.nocookie.net/ben10/images/9/98/Maltruant_Without_Head_Key.png",
+    gender: "Male",
+    type: "Villain",
+    power: "Time Manipulation, Immortality, Reality Warping",
+    firstAppearance: "Ben 10 Omniverse",
+    species: "Chronosapien"
+},
+{
+    name: "Geochelone Aerios",
+    image: "https://static.wikia.nocookie.net/ben10/images/9/95/WtMH_%28444%29.png",
+    gender: "Male",
+    type: "Superhero",
+    power: "Magic, Manna Manipulation, Spell Casting",
+    firstAppearance: "Ben 10 Ultimate Alien",
+    species: "Geochelone Aerios"
+},
+{
+    name: "Sunny",
+    image: "https://static.wikia.nocookie.net/ben10/images/4/46/GT_%28137%29.png",
+    gender: "Female",
+    type: "Antihero",
+    power: "Manna Manipulation, Manna Projection, Manna Constructs, Manna Absorption, Flight",
+    firstAppearance: "Ben 10 Ultimate Alien",
+    species: "Anodite"
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ];
+
+        let dailyCharacter = null;
+        let guessCount = 0;
+        let usedCharacters = [];
+        let guessedCharacters = [];
+        let currentLanguage = 'en';
+        let isSoundOn = false;
+
+        const backgroundMusic = new Audio("ben10sarkı/ben10.mp3");
+        backgroundMusic.loop = true;
+
+        const translations = {
+            en: {
+                title: "Ben10DLE",
+                placeholder: "Enter a Ben 10 Character...",
+                guessButton: "Guess",
+                homeButton: "Home",
+                congrats: "Character Identified!",
+                invalid: "Please enter a valid Ben 10 character!",
+                alreadyGuessed: "You already guessed this character!",
+                categories: {
+                    gender: "Gender",
+                    type: "Type",
+                    power: "Power",
+                    firstAppearance: "First Appearance",
+                    species: "Species"
+                }
+            },
+            tr: {
+                title: "Ben10DLE",
+                placeholder: "Bir Ben 10 Karakteri Girin...",
+                guessButton: "Tahmin Et",
+                homeButton: "Anasayfa",
+                congrats: "Karakter Tanımlandı!",
+                invalid: "Lütfen geçerli bir Ben 10 karakteri girin!",
+                alreadyGuessed: "Bu karakteri zaten tahmin ettiniz!",
+                categories: {
+                    gender: "Cinsiyet",
+                    type: "Tür",
+                    power: "Güç",
+                    firstAppearance: "İlk Görünüm",
+                    species: "Tür (Biyolojik)"
+                }
+            }
+        };
+
+        function toggleSound() {
+            const soundIcon = document.getElementById('soundIcon');
+            if (isSoundOn) {
+                backgroundMusic.pause();
+                soundIcon.textContent = '🔇';
+                isSoundOn = false;
+            } else {
+                backgroundMusic.play().catch(error => {
+                    console.log("Sound could not be played:", error);
+                });
+                soundIcon.textContent = '🔊';
+                isSoundOn = true;
+            }
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            document.getElementById('guessInput').placeholder = translations[lang].placeholder;
+            document.querySelector('.guess-input button:nth-child(3)').textContent = translations[lang].guessButton;
+            document.querySelector('.restart-button').textContent = lang === 'en' ? 'Restart' : 'Yeniden Başlat';
+            document.getElementById('homeButton').textContent = translations[lang].homeButton;
+            const guessResult = document.getElementById('guessResult');
+            if (guessResult.children.length > 0) {
+                const rows = guessResult.querySelectorAll('.guess-row');
+                rows.forEach(row => {
+                    const boxes = row.querySelectorAll('.category-box span');
+                    boxes[0].textContent = translations[lang].categories.gender;
+                    boxes[1].textContent = translations[lang].categories.type;
+                    boxes[2].textContent = translations[lang].categories.power;
+                    boxes[3].textContent = translations[lang].categories.firstAppearance;
+                    boxes[4].textContent = translations[lang].categories.species;
+                });
+            }
+        }
+
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('visible');
+        }
+
+        function selectLanguage(lang) {
+            changeLanguage(lang);
+            toggleLanguageDropdown();
+        }
+
+        function goToHomePage() {
+            window.location.href = "../index.html";
+        }
+
+        function selectRandomCharacter() {
+            let availableCharacters = characters.filter(char => !usedCharacters.includes(char.name));
+            if (availableCharacters.length === 0) {
+                usedCharacters = [];
+                availableCharacters = characters;
+            }
+            const randomIndex = Math.floor(Math.random() * availableCharacters.length);
+            const selectedCharacter = availableCharacters[randomIndex];
+            usedCharacters.push(selectedCharacter.name);
+            return selectedCharacter;
+        }
+
+        dailyCharacter = selectRandomCharacter();
+
+        function showSuggestions() {
+            const input = document.getElementById('guessInput').value.toLowerCase();
+            const suggestions = document.getElementById('suggestions');
+            suggestions.innerHTML = '';
+
+            if (input.length > 0) {
+                const filteredChars = characters.filter(char => 
+                    char.name.toLowerCase().startsWith(input) && 
+                    !guessedCharacters.includes(char.name.toLowerCase())
+                );
+                if (filteredChars.length > 0) {
+                    filteredChars.forEach(char => {
+                        const div = document.createElement('div');
+                        div.className = 'suggestion-item';
+
+                        const img = document.createElement('img');
+                        img.src = char.image;
+                        img.className = 'suggestion-image';
+                        img.alt = char.name;
+
+                        const nameSpan = document.createElement('span');
+                        nameSpan.textContent = char.name;
+
+                        div.appendChild(img);
+                        div.appendChild(nameSpan);
+
+                        div.onclick = () => {
+                            document.getElementById('guessInput').value = char.name;
+                            suggestions.style.display = 'none';
+                            checkGuess();
+                        };
+
+                        suggestions.appendChild(div);
+                    });
+                    suggestions.style.display = 'block';
+                } else {
+                    suggestions.style.display = 'none';
+                }
+            } else {
+                suggestions.style.display = 'none';
+            }
+        }
+
+        function resetGame() {
+            document.getElementById('guessResult').innerHTML = '';
+            guessCount = 0;
+            document.getElementById('guessCount').textContent = guessCount;
+            guessedCharacters = [];
+            dailyCharacter = selectRandomCharacter();
+            document.getElementById('fireworks').style.display = 'none';
+            document.getElementById('fireworks').innerHTML = '';
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessInput').disabled = false;
+            document.querySelector('.restart-button').classList.remove('visible');
+        }
+
+        function fireworks() {
+            const fireworksContainer = document.getElementById('fireworks');
+            fireworksContainer.style.display = 'block';
+
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    createFirework();
+                }, i * 200);
+            }
+
+            const message = document.createElement('div');
+            message.className = 'firework-message';
+            message.textContent = translations[currentLanguage].congrats;
+            fireworksContainer.appendChild(message);
+
+            document.querySelector('.restart-button').classList.add('visible');
+        }
+
+        function createFirework() {
+            const fireworksContainer = document.getElementById('fireworks');
+            const firework = document.createElement('div');
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            firework.className = 'firework';
+            firework.style.left = `${x}px`;
+            firework.style.top = `${y}px`;
+            fireworksContainer.appendChild(firework);
+
+            const hue = Math.random() * 360;
+
+            setTimeout(() => {
+                firework.remove();
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'firework-particle';
+                    particle.style.left = '0';
+                    particle.style.top = '0';
+                    particle.style.setProperty('--hue', hue);
+                    firework.appendChild(particle);
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 5 + 5;
+                    const velocityX = Math.cos(angle) * speed;
+                    const velocityY = Math.sin(angle) * speed;
+
+                    particle.animate(
+                        [
+                            { transform: 'translate(0, 0)', opacity: 1 },
+                            { transform: `translate(${velocityX * 10}px, ${velocityY * 10}px)`, opacity: 0 }
+                        ],
+                        {
+                            duration: 1500,
+                            easing: 'ease-out'
+                        }
+                    );
+
+                    setTimeout(() => particle.remove(), 1500);
+                }
+            }, 100);
+        }
+
+        function checkGuess() {
+            const guessInput = document.getElementById('guessInput').value.trim();
+            if (!guessInput) {
+                alert(translations[currentLanguage].invalid);
+                return;
+            }
+
+            const guessedCharacter = characters.find(char => char.name.toLowerCase() === guessInput.toLowerCase());
+            if (!guessedCharacter) {
+                alert(translations[currentLanguage].invalid);
+                return;
+            }
+
+            if (guessedCharacters.includes(guessedCharacter.name.toLowerCase())) {
+                alert(translations[currentLanguage].alreadyGuessed);
+                document.getElementById('guessInput').value = '';
+                document.getElementById('suggestions').style.display = 'none';
+                return;
+            }
+
+            guessCount++;
+            document.getElementById('guessCount').textContent = guessCount;
+            guessedCharacters.push(guessedCharacter.name.toLowerCase());
+
+            const guessResult = document.getElementById('guessResult');
+
+            const guessRow = document.createElement('div');
+            guessRow.className = 'guess-row';
+
+            const img = document.createElement('img');
+            img.src = guessedCharacter.image;
+            guessRow.appendChild(img);
+
+            const categoriesContainer = document.createElement('div');
+            categoriesContainer.className = 'categories-container';
+            categoriesContainer.style.display = 'flex';
+            categoriesContainer.style.flexWrap = 'wrap';
+            categoriesContainer.style.gap = '15px';
+            categoriesContainer.style.width = '100%';
+
+            const categories = [
+                { label: translations[currentLanguage].categories.gender, value: guessedCharacter.gender, correct: dailyCharacter.gender, type: 'strict' },
+                { label: translations[currentLanguage].categories.type, value: guessedCharacter.type, correct: dailyCharacter.type, type: 'strict' },
+                { label: translations[currentLanguage].categories.power, value: guessedCharacter.power, correct: dailyCharacter.power, type: 'strict' },
+                { label: translations[currentLanguage].categories.firstAppearance, value: guessedCharacter.firstAppearance, correct: dailyCharacter.firstAppearance, type: 'strict' },
+                { label: translations[currentLanguage].categories.species, value: guessedCharacter.species, correct: dailyCharacter.species, type: 'partial' }
+            ];
+
+            categories.forEach((category, index) => {
+                const box = document.createElement('div');
+                box.className = 'category-box';
+                box.style.animationDelay = `${index * 0.4}s`;
+
+                const label = document.createElement('span');
+                label.textContent = category.label;
+                box.appendChild(label);
+
+                const value = document.createElement('div');
+                value.className = 'category-value';
+                value.textContent = category.value;
+
+                if (category.type === 'strict') {
+                    // Strict comparison for Gender, Type, Power, and First Appearance
+                    if (category.value === category.correct) {
+                        value.classList.add('correct');
+                    } else {
+                        value.classList.add('incorrect');
+                    }
+                } else if (category.type === 'partial') {
+                    // Partial match logic for Species
+                    const guessedSpecies = category.value.toLowerCase();
+                    const correctSpecies = category.correct.toLowerCase();
+
+                    // Extract the base species (e.g., "Human" from "Human (Osmosian Hybrid)")
+                    const guessedBase = guessedSpecies.includes('(') ? guessedSpecies.split('(')[0].trim() : guessedSpecies;
+                    const correctBase = correctSpecies.includes('(') ? correctSpecies.split('(')[0].trim() : correctSpecies;
+
+                    if (guessedSpecies === correctSpecies) {
+                        value.classList.add('correct'); // Exact match
+                    } else if (guessedBase === correctBase) {
+                        value.classList.add('partial'); // Partial match (same base species)
+                    } else {
+                        value.classList.add('incorrect'); // No match
+                    }
+                }
+
+                box.appendChild(value);
+                categoriesContainer.appendChild(box);
+            });
+
+            guessRow.appendChild(categoriesContainer);
+            guessResult.appendChild(guessRow);
+
+            if (guessedCharacter.name.toLowerCase() === dailyCharacter.name.toLowerCase()) {
+                fireworks();
+                document.getElementById('guessInput').disabled = true;
+            } else {
+                document.getElementById('guessInput').value = '';
+            }
+
+            document.getElementById('suggestions').style.display = 'none';
+        }
+
+        document.addEventListener('click', function(e) {
+            const suggestions = document.getElementById('suggestions');
+            const dropdown = document.getElementById('languageDropdown');
+            if (!e.target.closest('.guess-input')) {
+                suggestions.style.display = 'none';
+            }
+            if (!e.target.closest('.language-menu')) {
+                dropdown.classList.remove('visible');
+            }
+        });
+
+        const guessCountElement = document.getElementById('guessCount');
+        guessCountElement.addEventListener('mouseover', function() {
+            guessCountElement.textContent = currentLanguage === 'en' ? 'Guess Count' : 'Tahmin Sayısı';
+        });
+        guessCountElement.addEventListener('mouseout', function() {
+            guessCountElement.textContent = guessCount;
+        });
+
+        window.onload = function() {
+            changeLanguage('en');
+        };
+    </script>
+</body>
+</html>
